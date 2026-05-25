@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snake</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Courier New', monospace;
+      color: #e0e0e0;
+    }
+    h1 { font-size: 2rem; margin-bottom: 8px; color: #4ecca3; letter-spacing: 4px; }
+    #scoreboard {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+    #scoreboard span { color: #4ecca3; font-weight: bold; }
+    canvas {
+      border: 2px solid #4ecca3;
+      box-shadow: 0 0 20px rgba(78, 204, 163, 0.3);
+    }
+    #overlay {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    #overlay h2 { font-size: 1.8rem; color: #ff6b6b; }
+    #overlay p  { color: #aaa; font-size: 0.9rem; }
+    button {
+      margin-top: 8px;
+      padding: 10px 28px;
+      background: #4ecca3;
+      color: #1a1a2e;
+      border: none;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 2px;
+    }
+    button:hover { background: #38b28e; }
+    #hint { margin-top: 12px; font-size: 0.8rem; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>SNAKE</h1>
+  <div id="scoreboard">
+    Score: <span id="score">0</span>
+    &nbsp;&nbsp;High Score: <span id="high">0</span>
+  </div>
+  <div style="position:relative;">
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div id="overlay">
+      <h2 id="overlay-title">SNAKE</h2>
+      <p id="overlay-msg">Use arrow keys or WASD to move</p>
+      <button id="start-btn" onclick="startGame()">START</button>
+    </div>
+  </div>
+  <p id="hint">Arrow keys / WASD &nbsp;|&nbsp; P to pause</p>
+
+<script>
+const COLS = 20, ROWS = 20;
+const CELL = 400 / COLS;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+const highEl  = document.getElementById('high');
+const overlay = document.getElementById('overlay');
+const overlayTitle = document.getElementById('overlay-title');
+const overlayMsg   = document.getElementById('overlay-msg');
+
+let snake, dir, nextDir, food, score, highScore = 0, loop, paused, running;
+
+function startGame() {
+  overlay.style.display = 'none';
+  snake = [{x:10, y:10}, {x:9, y:10}, {x:8, y:10}];
+  dir = {x:1, y:0};
+  nextDir = {x:1, y:0};
+  score = 0;
+  paused = false;
+  running = true;
+  scoreEl.textContent = 0;
+  placeFood();
+  clearInterval(loop);
+  loop = setInterval(tick, 120);
+}
+
+function placeFood() {
+  let pos;
+  do {
+    pos = {x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS)};
+  } while (snake.some(s => s.x===pos.x && s.y===pos.y));
+  food = pos;
+}
+
+function tick() {
+  if (paused) return;
+  dir = nextDir;
+  const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+
+  if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS ||
+      snake.some(s => s.x===head.x && s.y===head.y)) {
+    gameOver();
+    return;
+  }
+
+  snake.unshift(head);
+  if (head.x === food.x && head.y === food.y) {
+    score++;
+    scoreEl.textContent = score;
+    if (score > highScore) { highScore = score; highEl.textContent = highScore; }
+    placeFood();
+  } else {
+    snake.pop();
+  }
+  draw();
+}
+
+function draw() {
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(0, 0, 400, 400);
+
+  // grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= COLS; i++) {
+    ctx.beginPath(); ctx.moveTo(i*CELL, 0); ctx.lineTo(i*CELL, 400); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i*CELL); ctx.lineTo(400, i*CELL); ctx.stroke();
+  }
+
+  // food
+  const fx = food.x * CELL, fy = food.y * CELL;
+  ctx.fillStyle = '#ff6b6b';
+  ctx.beginPath();
+  ctx.arc(fx + CELL/2, fy + CELL/2, CELL/2 - 2, 0, Math.PI*2);
+  ctx.fill();
+
+  // snake
+  snake.forEach((seg, i) => {
+    const t = i / snake.length;
+    ctx.fillStyle = i === 0
+      ? '#4ecca3'
+      : `hsl(${160 - t*30}, 70%, ${55 - t*20}%)`;
+    const pad = i === 0 ? 1 : 2;
+    ctx.fillRect(seg.x*CELL + pad, seg.y*CELL + pad, CELL - pad*2, CELL - pad*2);
+  });
+}
+
+function gameOver() {
+  clearInterval(loop);
+  running = false;
+  overlayTitle.textContent = 'GAME OVER';
+  overlayMsg.textContent = `Score: ${score}`;
+  document.getElementById('start-btn').textContent = 'PLAY AGAIN';
+  overlay.style.display = 'flex';
+}
+
+document.addEventListener('keydown', e => {
+  if (!running) return;
+  if (e.key === 'p' || e.key === 'P') { paused = !paused; return; }
+  const map = {
+    ArrowUp:    {x:0,  y:-1},
+    ArrowDown:  {x:0,  y:1},
+    ArrowLeft:  {x:-1, y:0},
+    ArrowRight: {x:1,  y:0},
+    w: {x:0,  y:-1}, W: {x:0,  y:-1},
+    s: {x:0,  y:1},  S: {x:0,  y:1},
+    a: {x:-1, y:0},  A: {x:-1, y:0},
+    d: {x:1,  y:0},  D: {x:1,  y:0},
+  };
+  const nd = map[e.key];
+  if (nd && !(nd.x === -dir.x && nd.y === -dir.y)) {
+    nextDir = nd;
+    e.preventDefault();
+  }
+});
+
+// initial draw
+ctx.fillStyle = '#1a1a2e';
+ctx.fillRect(0, 0, 400, 400);
+</script>
+</body>
+</html>
