@@ -3,193 +3,286 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Snake</title>
+  <title>BayQuant — Quantitative Research</title>
   <style>
+    :root {
+      --ocean-deep: #0a2540;
+      --ocean-mid: #134e6f;
+      --fog: #cfe3e8;
+      --gold: #d8a657;
+      --ink: #0d1b24;
+      --paper: #f7f5f0;
+      --muted: #5c7282;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      background: #1a1a2e;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.5;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      height: 100vh;
-      font-family: 'Courier New', monospace;
-      color: #e0e0e0;
+      align-items: center;
+      overflow: hidden;
+      background: linear-gradient(180deg, #07182b 0%, var(--ocean-deep) 35%, var(--ocean-mid) 75%, #2b7a8c 100%);
+      color: var(--fog);
+      padding: 0 24px;
+      text-align: center;
     }
-    h1 { font-size: 2rem; margin-bottom: 8px; color: #4ecca3; letter-spacing: 4px; }
-    #scoreboard {
-      display: flex;
-      gap: 40px;
-      margin-bottom: 16px;
-      font-size: 1rem;
-    }
-    #scoreboard span { color: #4ecca3; font-weight: bold; }
-    canvas {
-      border: 2px solid #4ecca3;
-      box-shadow: 0 0 20px rgba(78, 204, 163, 0.3);
-    }
-    #overlay {
+
+    .hero::before {
+      content: "";
       position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(216, 166, 87, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 15% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .fog-band {
+      position: absolute;
+      left: 0; right: 0;
+      height: 220px;
+      background: linear-gradient(180deg, rgba(247,245,240,0) 0%, rgba(247,245,240,0.07) 100%);
+      filter: blur(2px);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .fog-band.f1 { top: 18%; animation: drift 38s linear infinite; }
+    .fog-band.f2 { top: 46%; animation: drift 55s linear infinite reverse; opacity: 0.3; }
+
+    @keyframes drift {
+      0%   { transform: translateX(-10%); }
+      100% { transform: translateX(10%); }
+    }
+
+    .wordmark {
+      position: relative;
+      font-size: clamp(2.6rem, 7vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      z-index: 1;
+    }
+    .wordmark .bay { color: var(--fog); }
+    .wordmark .quant { color: var(--gold); }
+
+    .tagline {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: rgba(207, 227, 232, 0.85);
+      max-width: 560px;
+      font-weight: 400;
+    }
+
+    .coords {
+      position: relative;
+      z-index: 1;
+      margin-top: 28px;
+      font-family: "SF Mono", "Courier New", monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      width: 22px;
+      height: 36px;
+      border: 1.5px solid rgba(207, 227, 232, 0.4);
+      border-radius: 12px;
+    }
+    .scroll-cue::before {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 50%;
+      width: 4px;
+      height: 8px;
+      margin-left: -2px;
+      background: var(--gold);
+      border-radius: 2px;
+      animation: scrollDot 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollDot {
+      0%   { opacity: 1; transform: translateY(0); }
+      70%  { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 0; transform: translateY(0); }
+    }
+
+    /* skyline silhouette at the base of the hero */
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      z-index: 1;
+    }
+
+    /* ---------- About ---------- */
+    .about {
+      padding: 96px 24px 88px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: "SF Mono", "Courier New", monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+    }
+
+    .about h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--ocean-deep);
+      margin-bottom: 22px;
+      letter-spacing: -0.01em;
+    }
+
+    .about p {
+      font-size: 1.05rem;
+      color: #33424d;
+      margin-bottom: 18px;
+    }
+
+    .about p.lede {
+      font-size: 1.18rem;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .focus-tags {
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .focus-tags span {
+      font-family: "SF Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(19, 78, 111, 0.07);
+      color: var(--ocean-mid);
+      border: 1px solid rgba(19, 78, 111, 0.18);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background: var(--ocean-deep);
+      color: rgba(207, 227, 232, 0.75);
+      padding: 48px 24px 36px;
+      text-align: center;
+    }
+
+    footer .footer-mark {
+      font-weight: 700;
+      color: var(--fog);
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+      font-size: 1.05rem;
+    }
+    footer .footer-mark .quant { color: var(--gold); }
+
+    .footer-links {
+      display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 26px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
     }
-    #overlay h2 { font-size: 1.8rem; color: #ff6b6b; }
-    #overlay p  { color: #aaa; font-size: 0.9rem; }
-    button {
-      margin-top: 8px;
-      padding: 10px 28px;
-      background: #4ecca3;
-      color: #1a1a2e;
-      border: none;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      letter-spacing: 2px;
+
+    .footer-links a {
+      color: rgba(207, 227, 232, 0.85);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
     }
-    button:hover { background: #38b28e; }
-    #hint { margin-top: 12px; font-size: 0.8rem; color: #666; }
+    .footer-links a:hover { border-color: var(--gold); color: var(--gold); }
+
+    footer .fine-print {
+      font-size: 0.75rem;
+      color: rgba(207, 227, 232, 0.4);
+      font-family: "SF Mono", "Courier New", monospace;
+    }
   </style>
 </head>
 <body>
-  <h1>SNAKE</h1>
-  <div id="scoreboard">
-    Score: <span id="score">0</span>
-    &nbsp;&nbsp;High Score: <span id="high">0</span>
-  </div>
-  <div style="position:relative;">
-    <canvas id="canvas" width="400" height="400"></canvas>
-    <div id="overlay">
-      <h2 id="overlay-title">SNAKE</h2>
-      <p id="overlay-msg">Use arrow keys or WASD to move</p>
-      <button id="start-btn" onclick="startGame()">START</button>
+
+  <section class="hero">
+    <div class="fog-band f1"></div>
+    <div class="fog-band f2"></div>
+
+    <h1 class="wordmark"><span class="bay">Bay</span><span class="quant">Quant</span></h1>
+    <p class="tagline">Quantitative research and systematic strategy work, built at the edge of the Pacific.</p>
+    <p class="coords">37.7749° N · 122.4194° W</p>
+
+    <svg class="skyline" viewBox="0 0 1200 90" preserveAspectRatio="none">
+      <path d="M0,90 L0,60 L40,60 L40,40 L60,40 L60,60 L120,60 L120,20 L140,20 L140,5 L160,5 L160,20 L180,20 L180,60 L260,60 L260,45 L300,45 L300,60 L380,60 L380,30 L400,30 L400,60 L480,60 L480,50 L520,50 L520,60 L600,60 L600,15 L620,15 L620,60 L700,60 L700,40 L740,40 L740,60 L820,60 L820,50 L860,50 L860,60 L940,60 L940,25 L960,25 L960,60 L1040,60 L1040,45 L1080,45 L1080,60 L1140,60 L1140,55 L1200,55 L1200,90 Z"
+            fill="#07182b" opacity="0.85" />
+    </svg>
+
+    <div class="scroll-cue"></div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="section-label">About</div>
+    <h2>Markets, models, and the long view.</h2>
+    <p class="lede">I'm a quantitative researcher based in San Francisco, working at the intersection of systematic trading, statistics, and software.</p>
+    <p>
+      This is a placeholder bio — swap in your real background here. Talk about what you research,
+      the kinds of markets or instruments you focus on, and the philosophy behind your approach
+      (e.g. data-driven, risk-aware, built for the long run rather than the next tick).
+    </p>
+    <p>
+      Like the fog rolling off the Bay, the best signals are often quiet and easy to miss.
+      BayQuant is where that research gets written up, tested, and shared.
+    </p>
+    <div class="focus-tags">
+      <span>Systematic Strategies</span>
+      <span>Market Microstructure</span>
+      <span>Machine Learning</span>
+      <span>Risk Modeling</span>
+      <span>Backtesting</span>
     </div>
-  </div>
-  <p id="hint">Arrow keys / WASD &nbsp;|&nbsp; P to pause</p>
+  </section>
 
-<script>
-const COLS = 20, ROWS = 20;
-const CELL = 400 / COLS;
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const scoreEl = document.getElementById('score');
-const highEl  = document.getElementById('high');
-const overlay = document.getElementById('overlay');
-const overlayTitle = document.getElementById('overlay-title');
-const overlayMsg   = document.getElementById('overlay-msg');
+  <footer>
+    <div class="footer-mark">Bay<span class="quant">Quant</span></div>
+    <div class="footer-links">
+      <a href="mailto:you@example.com">Email</a>
+      <a href="https://github.com/your-handle" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/your-handle" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://x.com/your-handle" target="_blank" rel="noopener">X</a>
+    </div>
+    <div class="fine-print">San Francisco, CA · © 2026 BayQuant</div>
+  </footer>
 
-let snake, dir, nextDir, food, score, highScore = 0, loop, paused, running;
-
-function startGame() {
-  overlay.style.display = 'none';
-  snake = [{x:10, y:10}, {x:9, y:10}, {x:8, y:10}];
-  dir = {x:1, y:0};
-  nextDir = {x:1, y:0};
-  score = 0;
-  paused = false;
-  running = true;
-  scoreEl.textContent = 0;
-  placeFood();
-  clearInterval(loop);
-  loop = setInterval(tick, 120);
-}
-
-function placeFood() {
-  let pos;
-  do {
-    pos = {x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS)};
-  } while (snake.some(s => s.x===pos.x && s.y===pos.y));
-  food = pos;
-}
-
-function tick() {
-  if (paused) return;
-  dir = nextDir;
-  const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
-
-  if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS ||
-      snake.some(s => s.x===head.x && s.y===head.y)) {
-    gameOver();
-    return;
-  }
-
-  snake.unshift(head);
-  if (head.x === food.x && head.y === food.y) {
-    score++;
-    scoreEl.textContent = score;
-    if (score > highScore) { highScore = score; highEl.textContent = highScore; }
-    placeFood();
-  } else {
-    snake.pop();
-  }
-  draw();
-}
-
-function draw() {
-  ctx.fillStyle = '#1a1a2e';
-  ctx.fillRect(0, 0, 400, 400);
-
-  // grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-  ctx.lineWidth = 0.5;
-  for (let i = 0; i <= COLS; i++) {
-    ctx.beginPath(); ctx.moveTo(i*CELL, 0); ctx.lineTo(i*CELL, 400); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, i*CELL); ctx.lineTo(400, i*CELL); ctx.stroke();
-  }
-
-  // food
-  const fx = food.x * CELL, fy = food.y * CELL;
-  ctx.fillStyle = '#ff6b6b';
-  ctx.beginPath();
-  ctx.arc(fx + CELL/2, fy + CELL/2, CELL/2 - 2, 0, Math.PI*2);
-  ctx.fill();
-
-  // snake
-  snake.forEach((seg, i) => {
-    const t = i / snake.length;
-    ctx.fillStyle = i === 0
-      ? '#4ecca3'
-      : `hsl(${160 - t*30}, 70%, ${55 - t*20}%)`;
-    const pad = i === 0 ? 1 : 2;
-    ctx.fillRect(seg.x*CELL + pad, seg.y*CELL + pad, CELL - pad*2, CELL - pad*2);
-  });
-}
-
-function gameOver() {
-  clearInterval(loop);
-  running = false;
-  overlayTitle.textContent = 'GAME OVER';
-  overlayMsg.textContent = `Score: ${score}`;
-  document.getElementById('start-btn').textContent = 'PLAY AGAIN';
-  overlay.style.display = 'flex';
-}
-
-document.addEventListener('keydown', e => {
-  if (!running) return;
-  if (e.key === 'p' || e.key === 'P') { paused = !paused; return; }
-  const map = {
-    ArrowUp:    {x:0,  y:-1},
-    ArrowDown:  {x:0,  y:1},
-    ArrowLeft:  {x:-1, y:0},
-    ArrowRight: {x:1,  y:0},
-    w: {x:0,  y:-1}, W: {x:0,  y:-1},
-    s: {x:0,  y:1},  S: {x:0,  y:1},
-    a: {x:-1, y:0},  A: {x:-1, y:0},
-    d: {x:1,  y:0},  D: {x:1,  y:0},
-  };
-  const nd = map[e.key];
-  if (nd && !(nd.x === -dir.x && nd.y === -dir.y)) {
-    nextDir = nd;
-    e.preventDefault();
-  }
-});
-
-// initial draw
-ctx.fillStyle = '#1a1a2e';
-ctx.fillRect(0, 0, 400, 400);
-</script>
 </body>
 </html>
