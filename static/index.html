@@ -4,15 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BayQuant — Quantitative Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ocean-deep: #0a2540;
-      --ocean-mid: #134e6f;
-      --fog: #cfe3e8;
-      --gold: #d8a657;
-      --ink: #0d1b24;
-      --paper: #f7f5f0;
-      --muted: #5c7282;
+      --abyss: #060f18;
+      --pacific: #0b3a52;
+      --bay: #1c6e82;
+      --bridge: #c1440e;
+      --ember: #e8773f;
+      --fog: #e8efeb;
+      --mist: #eef2ee;
+      --kelp: #2f6b53;
+      --ink: #07141c;
+      --muted: #4f6877;
+
+      --font-display: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+      --font-body: "Source Serif 4", Georgia, serif;
+      --font-mono: "IBM Plex Mono", "SF Mono", "Courier New", monospace;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,10 +30,15 @@
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-family: var(--font-body);
       color: var(--ink);
-      background: var(--paper);
-      line-height: 1.5;
+      background: var(--mist);
+      line-height: 1.6;
+    }
+
+    a:focus-visible, .scroll-cue:focus-visible {
+      outline: 2px solid var(--ember);
+      outline-offset: 3px;
     }
 
     /* ---------- Hero ---------- */
@@ -35,7 +50,7 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      background: linear-gradient(180deg, #07182b 0%, var(--ocean-deep) 35%, var(--ocean-mid) 75%, #2b7a8c 100%);
+      background: linear-gradient(180deg, var(--abyss) 0%, #0a2e44 38%, var(--pacific) 68%, var(--bay) 100%);
       color: var(--fog);
       padding: 0 24px;
       text-align: center;
@@ -46,69 +61,55 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 80% 15%, rgba(216, 166, 87, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 15% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 40%);
+        radial-gradient(circle at 78% 58%, rgba(193, 68, 14, 0.16) 0%, transparent 38%),
+        radial-gradient(circle at 18% 12%, rgba(232, 239, 235, 0.05) 0%, transparent 35%);
       pointer-events: none;
-    }
-
-    .fog-band {
-      position: absolute;
-      left: 0; right: 0;
-      height: 220px;
-      background: linear-gradient(180deg, rgba(247,245,240,0) 0%, rgba(247,245,240,0.07) 100%);
-      filter: blur(2px);
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    .fog-band.f1 { top: 18%; animation: drift 38s linear infinite; }
-    .fog-band.f2 { top: 46%; animation: drift 55s linear infinite reverse; opacity: 0.3; }
-
-    @keyframes drift {
-      0%   { transform: translateX(-10%); }
-      100% { transform: translateX(10%); }
+      z-index: 1;
     }
 
     .wordmark {
       position: relative;
+      z-index: 3;
+      font-family: var(--font-display);
       font-size: clamp(2.6rem, 7vw, 5rem);
       font-weight: 700;
       letter-spacing: -0.02em;
-      z-index: 1;
     }
-    .wordmark .bay { color: var(--fog); }
-    .wordmark .quant { color: var(--gold); }
+    .wordmark .bay-part { color: var(--fog); }
+    .wordmark .quant-part { color: var(--bridge); }
 
     .tagline {
       position: relative;
-      z-index: 1;
+      z-index: 3;
       margin-top: 18px;
+      font-family: var(--font-body);
       font-size: clamp(1rem, 2vw, 1.25rem);
-      color: rgba(207, 227, 232, 0.85);
+      color: rgba(232, 239, 235, 0.88);
       max-width: 560px;
       font-weight: 400;
     }
 
     .coords {
       position: relative;
-      z-index: 1;
+      z-index: 3;
       margin-top: 28px;
-      font-family: "SF Mono", "Courier New", monospace;
+      font-family: var(--font-mono);
       font-size: 0.78rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.85;
+      color: var(--ember);
+      opacity: 0.9;
     }
 
     .scroll-cue {
       position: absolute;
-      bottom: 36px;
+      bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 1;
+      z-index: 3;
       width: 22px;
       height: 36px;
-      border: 1.5px solid rgba(207, 227, 232, 0.4);
+      border: 1.5px solid rgba(232, 239, 235, 0.4);
       border-radius: 12px;
     }
     .scroll-cue::before {
@@ -119,7 +120,7 @@
       width: 4px;
       height: 8px;
       margin-left: -2px;
-      background: var(--gold);
+      background: var(--ember);
       border-radius: 2px;
       animation: scrollDot 1.8s ease-in-out infinite;
     }
@@ -129,50 +130,129 @@
       100% { opacity: 0; transform: translateY(0); }
     }
 
-    /* skyline silhouette at the base of the hero */
-    .skyline {
+    /* fog banks drifting through the bridge towers */
+    .fog-band {
       position: absolute;
-      bottom: 0;
+      left: -10%;
+      width: 120%;
+      z-index: 2;
+      background: linear-gradient(180deg, rgba(232,239,235,0) 0%, rgba(232,239,235,0.16) 50%, rgba(232,239,235,0) 100%);
+      filter: blur(6px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    .fog-band.f1 { top: 40vh; height: 16vh; animation: driftA 42s ease-in-out infinite; }
+    .fog-band.f2 { top: 50vh; height: 20vh; opacity: 0.7; animation: driftB 58s ease-in-out infinite; }
+    .fog-band.f3 { top: 60vh; height: 14vh; opacity: 0.5; animation: driftA 33s ease-in-out infinite reverse; }
+
+    @keyframes driftA {
+      0%   { transform: translateX(-6%); opacity: 0.5; }
+      50%  { transform: translateX(6%); opacity: 0.95; }
+      100% { transform: translateX(-6%); opacity: 0.5; }
+    }
+    @keyframes driftB {
+      0%   { transform: translateX(8%); opacity: 0.4; }
+      50%  { transform: translateX(-8%); opacity: 0.8; }
+      100% { transform: translateX(8%); opacity: 0.4; }
+    }
+
+    /* ---------- Golden Gate illustration ---------- */
+    .bridge-scene {
+      position: absolute;
       left: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
-      height: 90px;
+      height: min(58vh, 480px);
+      min-height: 280px;
       z-index: 1;
+    }
+    .bridge-rig { width: 100%; height: 100%; display: block; }
+
+    .tower-leg, .tower-strut { stroke: var(--bridge); stroke-linecap: round; }
+    .tower-leg { stroke-width: 9; }
+    .tower-strut { stroke-width: 5; }
+    .tower-cap { fill: var(--bridge); }
+    .tower-pier { fill: #0a2230; opacity: 0.9; }
+
+    .cable-far { stroke: var(--bridge); stroke-width: 3; fill: none; opacity: 0.35; }
+    .cable-near { stroke: var(--bridge); stroke-width: 4; fill: none; }
+    .hangers line { stroke: var(--bridge); stroke-width: 1.4; opacity: 0.85; }
+    .deck { stroke: #0a2230; stroke-width: 7; }
+    .deck-rail { stroke: var(--ember); stroke-width: 1.5; opacity: 0.6; }
+
+    .water-floor { fill: var(--pacific); }
+    .reflection { fill: url(#reflectionGradient); mix-blend-mode: screen; animation: shimmer 6s ease-in-out infinite; }
+    @keyframes shimmer { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.9; } }
+
+    .swell path { stroke: rgba(232, 239, 235, 0.5); stroke-width: 2; fill: none; }
+    .swell.swell--2 path { stroke: rgba(232, 239, 235, 0.25); stroke-width: 1.5; }
+    .swell { animation: swellDrift 16s linear infinite; }
+    .swell.swell--2 { animation-duration: 24s; animation-direction: reverse; }
+    @keyframes swellDrift {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-1440px); }
+    }
+
+    .gull { stroke: var(--fog); stroke-width: 2; fill: none; opacity: 0.55; stroke-linecap: round; }
+    .gull-1 { animation: gullDrift1 48s ease-in-out infinite; }
+    .gull-2 { animation: gullDrift2 60s ease-in-out infinite; }
+    @keyframes gullDrift1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(140px, -22px); }
+    }
+    @keyframes gullDrift2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-110px, 18px); }
+    }
+
+    .signal-dot { fill: var(--fog); animation: twinkle 5s ease-in-out infinite; }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.55; }
+    }
+
+    @media (max-width: 640px) {
+      .bridge-scene { height: 46vh; min-height: 220px; }
     }
 
     /* ---------- About ---------- */
     .about {
-      padding: 96px 24px 88px;
+      position: relative;
+      padding: 100px 24px 88px;
       max-width: 760px;
       margin: 0 auto;
     }
 
     .section-label {
-      font-family: "SF Mono", "Courier New", monospace;
+      font-family: var(--font-mono);
       font-size: 0.75rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--bridge);
       margin-bottom: 18px;
     }
 
     .about h2 {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 3.2vw, 2.3rem);
       font-weight: 700;
-      color: var(--ocean-deep);
-      margin-bottom: 22px;
+      color: var(--ink);
+      margin-bottom: 24px;
       letter-spacing: -0.01em;
     }
 
     .about p {
-      font-size: 1.05rem;
-      color: #33424d;
+      font-family: var(--font-body);
+      font-size: 1.08rem;
+      color: #2c3d46;
       margin-bottom: 18px;
     }
 
     .about p.lede {
-      font-size: 1.18rem;
+      font-size: 1.22rem;
       color: var(--ink);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .focus-tags {
@@ -183,31 +263,42 @@
     }
 
     .focus-tags span {
-      font-family: "SF Mono", "Courier New", monospace;
+      font-family: var(--font-mono);
       font-size: 0.8rem;
       padding: 7px 14px;
       border-radius: 999px;
-      background: rgba(19, 78, 111, 0.07);
-      color: var(--ocean-mid);
-      border: 1px solid rgba(19, 78, 111, 0.18);
+      background: rgba(47, 107, 83, 0.07);
+      color: var(--kelp);
+      border: 1px solid rgba(47, 107, 83, 0.25);
     }
 
     /* ---------- Footer ---------- */
     footer {
-      background: var(--ocean-deep);
-      color: rgba(207, 227, 232, 0.75);
-      padding: 48px 24px 36px;
+      position: relative;
+      background: var(--abyss);
+      color: rgba(232, 239, 235, 0.78);
+      padding: 52px 24px 36px;
       text-align: center;
+      overflow: hidden;
     }
 
+    .footer-rule {
+      display: block;
+      width: 100%;
+      height: 18px;
+      margin-bottom: 30px;
+    }
+    .footer-rule path { stroke: var(--bridge); stroke-width: 2; fill: none; opacity: 0.5; }
+
     footer .footer-mark {
+      font-family: var(--font-display);
       font-weight: 700;
       color: var(--fog);
       letter-spacing: -0.01em;
       margin-bottom: 14px;
       font-size: 1.05rem;
     }
-    footer .footer-mark .quant { color: var(--gold); }
+    footer .footer-mark .quant-part { color: var(--bridge); }
 
     .footer-links {
       display: flex;
@@ -219,17 +310,25 @@
     }
 
     .footer-links a {
-      color: rgba(207, 227, 232, 0.85);
+      color: var(--fog);
       text-decoration: none;
       border-bottom: 1px solid transparent;
-      transition: border-color 0.15s ease;
+      transition: border-color 0.15s ease, color 0.15s ease;
     }
-    .footer-links a:hover { border-color: var(--gold); color: var(--gold); }
+    .footer-links a:hover { border-color: var(--ember); color: var(--ember); }
 
     footer .fine-print {
       font-size: 0.75rem;
-      color: rgba(207, 227, 232, 0.4);
-      font-family: "SF Mono", "Courier New", monospace;
+      color: rgba(232, 239, 235, 0.45);
+      font-family: var(--font-mono);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
     }
   </style>
 </head>
@@ -238,31 +337,102 @@
   <section class="hero">
     <div class="fog-band f1"></div>
     <div class="fog-band f2"></div>
+    <div class="fog-band f3"></div>
 
-    <h1 class="wordmark"><span class="bay">Bay</span><span class="quant">Quant</span></h1>
-    <p class="tagline">Quantitative research and systematic strategy work, built at the edge of the Pacific.</p>
+    <div class="bridge-scene">
+      <svg class="bridge-rig" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="reflectionGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c1440e" stop-opacity="0.55" />
+            <stop offset="100%" stop-color="#c1440e" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        <!-- sky texture: gulls + signal dots -->
+        <g class="gull gull-1" transform="translate(220,70)">
+          <path d="M-10,0 Q-5,-7 0,0 Q5,-7 10,0" />
+        </g>
+        <g class="gull gull-2" transform="translate(1140,120)">
+          <path d="M-9,0 Q-4.5,-6 0,0 Q4.5,-6 9,0" />
+        </g>
+        <g class="signal-dots">
+          <circle class="signal-dot" cx="120" cy="40" r="1.6" style="animation-delay:0s" />
+          <circle class="signal-dot" cx="260" cy="20" r="1.4" style="animation-delay:0.6s" />
+          <circle class="signal-dot" cx="520" cy="55" r="1.6" style="animation-delay:1.2s" />
+          <circle class="signal-dot" cx="700" cy="25" r="1.3" style="animation-delay:1.8s" />
+          <circle class="signal-dot" cx="900" cy="60" r="1.6" style="animation-delay:0.3s" />
+          <circle class="signal-dot" cx="1020" cy="30" r="1.4" style="animation-delay:2.4s" />
+          <circle class="signal-dot" cx="1250" cy="45" r="1.6" style="animation-delay:1.5s" />
+          <circle class="signal-dot" cx="1340" cy="22" r="1.3" style="animation-delay:0.9s" />
+        </g>
+
+        <!-- water -->
+        <rect class="water-floor" x="0" y="300" width="1440" height="120" />
+        <rect class="reflection" x="336" y="300" width="48" height="120" />
+        <rect class="reflection" x="1056" y="300" width="48" height="120" style="animation-delay:1.4s" />
+        <g class="swell">
+          <path d="M0,312 Q60,302 120,312 T240,312 T360,312 T480,312 T600,312 T720,312 T840,312 T960,312 T1080,312 T1200,312 T1320,312 T1440,312" />
+          <path d="M1440,312 Q1500,302 1560,312 T1680,312 T1800,312 T1920,312 T2040,312 T2160,312 T2280,312 T2400,312 T2520,312 T2640,312 T2760,312 T2880,312" />
+        </g>
+        <g class="swell swell--2">
+          <path d="M0,326 Q60,318 120,326 T240,326 T360,326 T480,326 T600,326 T720,326 T840,326 T960,326 T1080,326 T1200,326 T1320,326 T1440,326" />
+          <path d="M1440,326 Q1500,318 1560,326 T1680,326 T1800,326 T1920,326 T2040,326 T2160,326 T2280,326 T2400,326 T2520,326 T2640,326 T2760,326 T2880,326" />
+        </g>
+
+        <!-- bridge structure -->
+        <g class="hangers"></g>
+        <path class="cable-far" d="" />
+        <path class="cable-near" d="" />
+        <line class="deck" x1="0" y1="300" x2="1440" y2="300" />
+        <line class="deck-rail" x1="0" y1="296" x2="1440" y2="296" />
+
+        <g class="tower" transform="translate(360,0)">
+          <rect class="tower-pier" x="-38" y="298" width="76" height="34" rx="3" />
+          <line class="tower-leg" x1="-34" y1="32" x2="-34" y2="300" />
+          <line class="tower-leg" x1="34" y1="32" x2="34" y2="300" />
+          <line class="tower-strut" x1="-34" y1="70" x2="34" y2="70" />
+          <line class="tower-strut" x1="-34" y1="120" x2="34" y2="120" />
+          <line class="tower-strut" x1="-34" y1="170" x2="34" y2="170" />
+          <line class="tower-strut" x1="-34" y1="220" x2="34" y2="220" />
+          <line class="tower-strut" x1="-34" y1="270" x2="34" y2="270" />
+          <rect class="tower-cap" x="-26" y="4" width="52" height="14" rx="2" />
+          <rect class="tower-cap" x="-40" y="18" width="80" height="14" rx="2" />
+        </g>
+
+        <g class="tower" transform="translate(1080,0)">
+          <rect class="tower-pier" x="-38" y="298" width="76" height="34" rx="3" />
+          <line class="tower-leg" x1="-34" y1="32" x2="-34" y2="300" />
+          <line class="tower-leg" x1="34" y1="32" x2="34" y2="300" />
+          <line class="tower-strut" x1="-34" y1="70" x2="34" y2="70" />
+          <line class="tower-strut" x1="-34" y1="120" x2="34" y2="120" />
+          <line class="tower-strut" x1="-34" y1="170" x2="34" y2="170" />
+          <line class="tower-strut" x1="-34" y1="220" x2="34" y2="220" />
+          <line class="tower-strut" x1="-34" y1="270" x2="34" y2="270" />
+          <rect class="tower-cap" x="-26" y="4" width="52" height="14" rx="2" />
+          <rect class="tower-cap" x="-40" y="18" width="80" height="14" rx="2" />
+        </g>
+      </svg>
+    </div>
+
+    <h1 class="wordmark"><span class="bay-part">Bay</span><span class="quant-part">Quant</span></h1>
+    <p class="tagline">Quantitative research and systematic strategy work, built where the fog meets the Golden Gate.</p>
     <p class="coords">37.7749° N · 122.4194° W</p>
-
-    <svg class="skyline" viewBox="0 0 1200 90" preserveAspectRatio="none">
-      <path d="M0,90 L0,60 L40,60 L40,40 L60,40 L60,60 L120,60 L120,20 L140,20 L140,5 L160,5 L160,20 L180,20 L180,60 L260,60 L260,45 L300,45 L300,60 L380,60 L380,30 L400,30 L400,60 L480,60 L480,50 L520,50 L520,60 L600,60 L600,15 L620,15 L620,60 L700,60 L700,40 L740,40 L740,60 L820,60 L820,50 L860,50 L860,60 L940,60 L940,25 L960,25 L960,60 L1040,60 L1040,45 L1080,45 L1080,60 L1140,60 L1140,55 L1200,55 L1200,90 Z"
-            fill="#07182b" opacity="0.85" />
-    </svg>
 
     <div class="scroll-cue"></div>
   </section>
 
   <section class="about" id="about">
     <div class="section-label">About</div>
-    <h2>Markets, models, and the long view.</h2>
-    <p class="lede">I'm a quantitative researcher based in San Francisco, working at the intersection of systematic trading, statistics, and software.</p>
+    <h2>Built where the fog meets the grid.</h2>
+    <p class="lede">I'm a quantitative researcher based in San Francisco, working where systematic trading, statistics, and software meet.</p>
     <p>
       This is a placeholder bio — swap in your real background here. Talk about what you research,
       the kinds of markets or instruments you focus on, and the philosophy behind your approach
       (e.g. data-driven, risk-aware, built for the long run rather than the next tick).
     </p>
     <p>
-      Like the fog rolling off the Bay, the best signals are often quiet and easy to miss.
-      BayQuant is where that research gets written up, tested, and shared.
+      Like the fog that rolls through the towers of the Golden Gate, the clearest signals are usually
+      the quietest. BayQuant is where that research gets written up, tested, and shared.
     </p>
     <div class="focus-tags">
       <span>Systematic Strategies</span>
@@ -274,15 +444,65 @@
   </section>
 
   <footer>
-    <div class="footer-mark">Bay<span class="quant">Quant</span></div>
+    <svg class="footer-rule" viewBox="0 0 1440 18" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,9 Q60,2 120,9 T240,9 T360,9 T480,9 T600,9 T720,9 T840,9 T960,9 T1080,9 T1200,9 T1320,9 T1440,9" />
+    </svg>
+    <div class="footer-mark">Bay<span class="quant-part">Quant</span></div>
     <div class="footer-links">
       <a href="mailto:you@example.com">Email</a>
       <a href="https://github.com/your-handle" target="_blank" rel="noopener">GitHub</a>
       <a href="https://linkedin.com/in/your-handle" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://x.com/your-handle" target="_blank" rel="noopener">X</a>
     </div>
-    <div class="fine-print">San Francisco, CA · © 2026 BayQuant</div>
+    <div class="fine-print">San Francisco, CA · Pacific Coast · © 2026 BayQuant</div>
   </footer>
+
+  <script>
+    (function () {
+      var svg = document.querySelector('.bridge-rig');
+      if (!svg) return;
+
+      var deckY = 300;
+      var keypoints = [[40, 278], [360, 52], [720, 188], [1080, 52], [1400, 278]];
+
+      function cableY(x) {
+        for (var i = 0; i < keypoints.length - 1; i++) {
+          var x0 = keypoints[i][0], y0 = keypoints[i][1];
+          var x1 = keypoints[i + 1][0], y1 = keypoints[i + 1][1];
+          if (x >= x0 && x <= x1) {
+            var t = (x - x0) / (x1 - x0);
+            var ft = (1 - Math.cos(t * Math.PI)) / 2;
+            return y0 + (y1 - y0) * ft;
+          }
+        }
+        return deckY;
+      }
+
+      var step = 8;
+      var near = '', far = '';
+      for (var x = 40; x <= 1400; x += step) {
+        var y = cableY(x);
+        near += (x === 40 ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
+        far += (x === 40 ? 'M' : 'L') + x + ',' + (y + 16).toFixed(1) + ' ';
+      }
+      svg.querySelector('.cable-near').setAttribute('d', near);
+      svg.querySelector('.cable-far').setAttribute('d', far);
+
+      var hangers = svg.querySelector('.hangers');
+      var frag = document.createDocumentFragment();
+      for (var hx = 64; hx <= 1376; hx += 32) {
+        if (Math.abs(hx - 360) < 40 || Math.abs(hx - 1080) < 40) continue;
+        var hy = cableY(hx);
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', hx);
+        line.setAttribute('y1', hy.toFixed(1));
+        line.setAttribute('x2', hx);
+        line.setAttribute('y2', deckY);
+        frag.appendChild(line);
+      }
+      hangers.appendChild(frag);
+    })();
+  </script>
 
 </body>
 </html>
