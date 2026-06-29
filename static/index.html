@@ -12,8 +12,8 @@
       --abyss: #060f18;
       --pacific: #0b3a52;
       --bay: #1c6e82;
-      --bridge: #c1440e;
-      --ember: #e8773f;
+      --bridge: #c43010;
+      --ember: #e06030;
       --fog: #e8efeb;
       --mist: #eef2ee;
       --kelp: #2f6b53;
@@ -32,11 +32,11 @@
     body {
       font-family: var(--font-body);
       color: var(--ink);
-      background: var(--mist);
+      background: #f4f8fa;
       line-height: 1.6;
     }
 
-    a:focus-visible, .scroll-cue:focus-visible {
+    a:focus-visible {
       outline: 2px solid var(--ember);
       outline-offset: 3px;
     }
@@ -47,12 +47,12 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       overflow: hidden;
-      background: linear-gradient(180deg, var(--abyss) 0%, #0a2e44 38%, var(--pacific) 68%, var(--bay) 100%);
+      background: linear-gradient(180deg, #0a4599 0%, #1668c4 28%, #3498d8 60%, #5bbdec 85%, #7ccff5 100%);
       color: var(--fog);
-      padding: 0 24px;
+      padding: 14vh 24px 0;
       text-align: center;
     }
 
@@ -61,8 +61,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 78% 58%, rgba(193, 68, 14, 0.16) 0%, transparent 38%),
-        radial-gradient(circle at 18% 12%, rgba(232, 239, 235, 0.05) 0%, transparent 35%);
+        radial-gradient(circle at 72% 8%, rgba(255, 255, 255, 0.18) 0%, transparent 38%),
+        radial-gradient(circle at 20% 5%, rgba(255, 245, 200, 0.08) 0%, transparent 30%);
       pointer-events: none;
       z-index: 1;
     }
@@ -75,7 +75,7 @@
       font-weight: 700;
       letter-spacing: -0.02em;
     }
-    .wordmark .bay-part { color: var(--fog); }
+    .wordmark .bay-part { color: #ffffff; }
     .wordmark .quant-part { color: var(--bridge); }
 
     .tagline {
@@ -84,7 +84,7 @@
       margin-top: 18px;
       font-family: var(--font-body);
       font-size: clamp(1rem, 2vw, 1.25rem);
-      color: rgba(232, 239, 235, 0.88);
+      color: rgba(255, 255, 255, 0.92);
       max-width: 560px;
       font-weight: 400;
     }
@@ -101,61 +101,6 @@
       opacity: 0.9;
     }
 
-    .scroll-cue {
-      position: absolute;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 3;
-      width: 22px;
-      height: 36px;
-      border: 1.5px solid rgba(232, 239, 235, 0.4);
-      border-radius: 12px;
-    }
-    .scroll-cue::before {
-      content: "";
-      position: absolute;
-      top: 7px;
-      left: 50%;
-      width: 4px;
-      height: 8px;
-      margin-left: -2px;
-      background: var(--ember);
-      border-radius: 2px;
-      animation: scrollDot 1.8s ease-in-out infinite;
-    }
-    @keyframes scrollDot {
-      0%   { opacity: 1; transform: translateY(0); }
-      70%  { opacity: 0; transform: translateY(10px); }
-      100% { opacity: 0; transform: translateY(0); }
-    }
-
-    /* fog banks drifting through the bridge towers */
-    .fog-band {
-      position: absolute;
-      left: -10%;
-      width: 120%;
-      z-index: 2;
-      background: linear-gradient(180deg, rgba(232,239,235,0) 0%, rgba(232,239,235,0.16) 50%, rgba(232,239,235,0) 100%);
-      filter: blur(6px);
-      mix-blend-mode: screen;
-      pointer-events: none;
-    }
-    .fog-band.f1 { top: 40vh; height: 16vh; animation: driftA 42s ease-in-out infinite; }
-    .fog-band.f2 { top: 50vh; height: 20vh; opacity: 0.7; animation: driftB 58s ease-in-out infinite; }
-    .fog-band.f3 { top: 60vh; height: 14vh; opacity: 0.5; animation: driftA 33s ease-in-out infinite reverse; }
-
-    @keyframes driftA {
-      0%   { transform: translateX(-6%); opacity: 0.5; }
-      50%  { transform: translateX(6%); opacity: 0.95; }
-      100% { transform: translateX(-6%); opacity: 0.5; }
-    }
-    @keyframes driftB {
-      0%   { transform: translateX(8%); opacity: 0.4; }
-      50%  { transform: translateX(-8%); opacity: 0.8; }
-      100% { transform: translateX(8%); opacity: 0.4; }
-    }
-
     /* ---------- Golden Gate illustration ---------- */
     .bridge-scene {
       position: absolute;
@@ -169,24 +114,22 @@
     }
     .bridge-rig { width: 100%; height: 100%; display: block; }
 
-    .tower-leg, .tower-strut { stroke: var(--bridge); stroke-linecap: round; }
-    .tower-leg { stroke-width: 9; }
-    .tower-strut { stroke-width: 5; }
+    .tower-body { fill: var(--bridge); }
     .tower-cap { fill: var(--bridge); }
-    .tower-pier { fill: #0a2230; opacity: 0.9; }
+    .tower-pier { fill: #5a86a0; }
 
-    .cable-far { stroke: var(--bridge); stroke-width: 3; fill: none; opacity: 0.35; }
-    .cable-near { stroke: var(--bridge); stroke-width: 4; fill: none; }
-    .hangers line { stroke: var(--bridge); stroke-width: 1.4; opacity: 0.85; }
-    .deck { stroke: #0a2230; stroke-width: 7; }
-    .deck-rail { stroke: var(--ember); stroke-width: 1.5; opacity: 0.6; }
+    .cable-far { stroke: var(--bridge); stroke-width: 3.5; fill: none; opacity: 0.65; }
+    .cable-near { stroke: var(--bridge); stroke-width: 5; fill: none; }
+    .hangers line { stroke: var(--bridge); stroke-width: 1.6; opacity: 0.9; }
+    .deck-truss { fill: #8a2008; }
+    .deck-rail { stroke: var(--ember); stroke-width: 1.5; opacity: 0.7; }
 
-    .water-floor { fill: var(--pacific); }
+    .water-floor { fill: #0ea8c4; }
     .reflection { fill: url(#reflectionGradient); mix-blend-mode: screen; animation: shimmer 6s ease-in-out infinite; }
     @keyframes shimmer { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.9; } }
 
-    .swell path { stroke: rgba(232, 239, 235, 0.5); stroke-width: 2; fill: none; }
-    .swell.swell--2 path { stroke: rgba(232, 239, 235, 0.25); stroke-width: 1.5; }
+    .swell path { stroke: rgba(232, 239, 235, 0.75); stroke-width: 2; fill: none; }
+    .swell.swell--2 path { stroke: rgba(232, 239, 235, 0.45); stroke-width: 1.5; }
     .swell { animation: swellDrift 16s linear infinite; }
     .swell.swell--2 { animation-duration: 24s; animation-direction: reverse; }
     @keyframes swellDrift {
@@ -194,7 +137,7 @@
       to   { transform: translateX(-1440px); }
     }
 
-    .gull { stroke: var(--fog); stroke-width: 2; fill: none; opacity: 0.55; stroke-linecap: round; }
+    .gull { stroke: var(--fog); stroke-width: 2; fill: none; opacity: 0.85; stroke-linecap: round; }
     .gull-1 { animation: gullDrift1 48s ease-in-out infinite; }
     .gull-2 { animation: gullDrift2 60s ease-in-out infinite; }
     @keyframes gullDrift1 {
@@ -208,8 +151,22 @@
 
     .signal-dot { fill: var(--fog); animation: twinkle 5s ease-in-out infinite; }
     @keyframes twinkle {
-      0%, 100% { opacity: 0.1; }
-      50% { opacity: 0.55; }
+      0%, 100% { opacity: 0.25; }
+      50% { opacity: 0.9; }
+    }
+
+    .eq {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: clamp(0.62rem, 1.05vw, 0.85rem);
+      color: var(--fog);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2;
+      will-change: transform, opacity;
+      white-space: nowrap;
+      user-select: none;
+      letter-spacing: 0.04em;
     }
 
     @media (max-width: 640px) {
@@ -245,7 +202,7 @@
     .about p {
       font-family: var(--font-body);
       font-size: 1.08rem;
-      color: #2c3d46;
+      color: #1e3040;
       margin-bottom: 18px;
     }
 
@@ -267,9 +224,9 @@
       font-size: 0.8rem;
       padding: 7px 14px;
       border-radius: 999px;
-      background: rgba(47, 107, 83, 0.07);
+      background: rgba(47, 107, 83, 0.10);
       color: var(--kelp);
-      border: 1px solid rgba(47, 107, 83, 0.25);
+      border: 1px solid rgba(47, 107, 83, 0.40);
     }
 
     /* ---------- Footer ---------- */
@@ -335,81 +292,77 @@
 <body>
 
   <section class="hero">
-    <div class="fog-band f1"></div>
-    <div class="fog-band f2"></div>
-    <div class="fog-band f3"></div>
-
     <div class="bridge-scene">
       <svg class="bridge-rig" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <linearGradient id="reflectionGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#c1440e" stop-opacity="0.55" />
-            <stop offset="100%" stop-color="#c1440e" stop-opacity="0" />
+            <stop offset="0%" stop-color="#c43010" stop-opacity="0.65"/>
+            <stop offset="100%" stop-color="#c43010" stop-opacity="0"/>
           </linearGradient>
         </defs>
 
-        <!-- sky texture: gulls + signal dots -->
-        <g class="gull gull-1" transform="translate(220,70)">
-          <path d="M-10,0 Q-5,-7 0,0 Q5,-7 10,0" />
-        </g>
-        <g class="gull gull-2" transform="translate(1140,120)">
-          <path d="M-9,0 Q-4.5,-6 0,0 Q4.5,-6 9,0" />
-        </g>
-        <g class="signal-dots">
-          <circle class="signal-dot" cx="120" cy="40" r="1.6" style="animation-delay:0s" />
-          <circle class="signal-dot" cx="260" cy="20" r="1.4" style="animation-delay:0.6s" />
-          <circle class="signal-dot" cx="520" cy="55" r="1.6" style="animation-delay:1.2s" />
-          <circle class="signal-dot" cx="700" cy="25" r="1.3" style="animation-delay:1.8s" />
-          <circle class="signal-dot" cx="900" cy="60" r="1.6" style="animation-delay:0.3s" />
-          <circle class="signal-dot" cx="1020" cy="30" r="1.4" style="animation-delay:2.4s" />
-          <circle class="signal-dot" cx="1250" cy="45" r="1.6" style="animation-delay:1.5s" />
-          <circle class="signal-dot" cx="1340" cy="22" r="1.3" style="animation-delay:0.9s" />
-        </g>
-
         <!-- water -->
-        <rect class="water-floor" x="0" y="300" width="1440" height="120" />
-        <rect class="reflection" x="336" y="300" width="48" height="120" />
-        <rect class="reflection" x="1056" y="300" width="48" height="120" style="animation-delay:1.4s" />
+        <rect x="0" y="300" width="1440" height="120" fill="#0ea8c4"/>
+        <rect class="reflection" x="362" y="300" width="76" height="120"/>
+        <rect class="reflection" x="1050" y="300" width="60" height="120" style="animation-delay:1.4s"/>
         <g class="swell">
-          <path d="M0,312 Q60,302 120,312 T240,312 T360,312 T480,312 T600,312 T720,312 T840,312 T960,312 T1080,312 T1200,312 T1320,312 T1440,312" />
-          <path d="M1440,312 Q1500,302 1560,312 T1680,312 T1800,312 T1920,312 T2040,312 T2160,312 T2280,312 T2400,312 T2520,312 T2640,312 T2760,312 T2880,312" />
+          <path d="M0,310 Q60,301 120,310 T240,310 T360,310 T480,310 T600,310 T720,310 T840,310 T960,310 T1080,310 T1200,310 T1320,310 T1440,310"/>
+          <path d="M1440,310 Q1500,301 1560,310 T1680,310 T1800,310 T1920,310 T2040,310 T2160,310 T2280,310 T2400,310 T2520,310 T2640,310 T2760,310 T2880,310"/>
         </g>
         <g class="swell swell--2">
-          <path d="M0,326 Q60,318 120,326 T240,326 T360,326 T480,326 T600,326 T720,326 T840,326 T960,326 T1080,326 T1200,326 T1320,326 T1440,326" />
-          <path d="M1440,326 Q1500,318 1560,326 T1680,326 T1800,326 T1920,326 T2040,326 T2160,326 T2280,326 T2400,326 T2520,326 T2640,326 T2760,326 T2880,326" />
+          <path d="M0,324 Q60,316 120,324 T240,324 T360,324 T480,324 T600,324 T720,324 T840,324 T960,324 T1080,324 T1200,324 T1320,324 T1440,324"/>
+          <path d="M1440,324 Q1500,316 1560,324 T1680,324 T1800,324 T1920,324 T2040,324 T2160,324 T2280,324 T2400,324 T2520,324 T2640,324 T2760,324 T2880,324"/>
         </g>
 
-        <!-- bridge structure -->
+        <!-- sky: gulls + stars -->
+        <g class="gull gull-1" transform="translate(200,65)">
+          <path d="M-10,0 Q-5,-7 0,0 Q5,-7 10,0"/>
+        </g>
+        <g class="gull gull-2" transform="translate(1120,100)">
+          <path d="M-9,0 Q-4.5,-6 0,0 Q4.5,-6 9,0"/>
+        </g>
+        <g class="signal-dots">
+          <circle class="signal-dot" cx="120" cy="35" r="1.5" style="animation-delay:0s"/>
+          <circle class="signal-dot" cx="580" cy="22" r="1.4" style="animation-delay:1.2s"/>
+          <circle class="signal-dot" cx="880" cy="48" r="1.5" style="animation-delay:0.4s"/>
+          <circle class="signal-dot" cx="1300" cy="30" r="1.4" style="animation-delay:1.8s"/>
+        </g>
+
+        <!-- cable anchorage blocks at shore -->
+        <rect class="tower-pier" x="0" y="260" width="56" height="42" rx="2"/>
+        <rect class="tower-pier" x="1384" y="260" width="56" height="42" rx="2"/>
+
+        <!-- bridge structure (cables + hangers filled by JS) -->
         <g class="hangers"></g>
-        <path class="cable-far" d="" />
-        <path class="cable-near" d="" />
-        <line class="deck" x1="0" y1="300" x2="1440" y2="300" />
-        <line class="deck-rail" x1="0" y1="296" x2="1440" y2="296" />
+        <path class="cable-far" d=""/>
+        <path class="cable-near" d=""/>
 
-        <g class="tower" transform="translate(360,0)">
-          <rect class="tower-pier" x="-38" y="298" width="76" height="34" rx="3" />
-          <line class="tower-leg" x1="-34" y1="32" x2="-34" y2="300" />
-          <line class="tower-leg" x1="34" y1="32" x2="34" y2="300" />
-          <line class="tower-strut" x1="-34" y1="70" x2="34" y2="70" />
-          <line class="tower-strut" x1="-34" y1="120" x2="34" y2="120" />
-          <line class="tower-strut" x1="-34" y1="170" x2="34" y2="170" />
-          <line class="tower-strut" x1="-34" y1="220" x2="34" y2="220" />
-          <line class="tower-strut" x1="-34" y1="270" x2="34" y2="270" />
-          <rect class="tower-cap" x="-26" y="4" width="52" height="14" rx="2" />
-          <rect class="tower-cap" x="-40" y="18" width="80" height="14" rx="2" />
+        <!-- stiffening truss + rail -->
+        <rect class="deck-truss" x="0" y="290" width="1440" height="12"/>
+        <line class="deck-rail" x1="0" y1="290" x2="1440" y2="290"/>
+
+        <!-- South tower — dominant, x=400 -->
+        <g class="tower" transform="translate(400,0)">
+          <rect class="tower-pier" x="-52" y="290" width="104" height="56" rx="2"/>
+          <rect class="tower-body" x="-44" y="18" width="16" height="272"/>
+          <rect class="tower-body" x="28" y="18" width="16" height="272"/>
+          <rect class="tower-body" x="-44" y="86" width="88" height="10"/>
+          <rect class="tower-body" x="-44" y="146" width="88" height="10"/>
+          <rect class="tower-body" x="-44" y="206" width="88" height="10"/>
+          <rect class="tower-cap" x="-44" y="8" width="88" height="10"/>
+          <rect class="tower-cap" x="-29" y="0" width="58" height="8"/>
         </g>
 
-        <g class="tower" transform="translate(1080,0)">
-          <rect class="tower-pier" x="-38" y="298" width="76" height="34" rx="3" />
-          <line class="tower-leg" x1="-34" y1="32" x2="-34" y2="300" />
-          <line class="tower-leg" x1="34" y1="32" x2="34" y2="300" />
-          <line class="tower-strut" x1="-34" y1="70" x2="34" y2="70" />
-          <line class="tower-strut" x1="-34" y1="120" x2="34" y2="120" />
-          <line class="tower-strut" x1="-34" y1="170" x2="34" y2="170" />
-          <line class="tower-strut" x1="-34" y1="220" x2="34" y2="220" />
-          <line class="tower-strut" x1="-34" y1="270" x2="34" y2="270" />
-          <rect class="tower-cap" x="-26" y="4" width="52" height="14" rx="2" />
-          <rect class="tower-cap" x="-40" y="18" width="80" height="14" rx="2" />
+        <!-- North tower — receding background, x=1080 -->
+        <g class="tower" transform="translate(1080,0)" opacity="0.80">
+          <rect class="tower-pier" x="-40" y="290" width="80" height="56" rx="2"/>
+          <rect class="tower-body" x="-32" y="62" width="12" height="228"/>
+          <rect class="tower-body" x="20" y="62" width="12" height="228"/>
+          <rect class="tower-body" x="-32" y="119" width="64" height="9"/>
+          <rect class="tower-body" x="-32" y="169" width="64" height="9"/>
+          <rect class="tower-body" x="-32" y="219" width="64" height="9"/>
+          <rect class="tower-cap" x="-32" y="52" width="64" height="10"/>
+          <rect class="tower-cap" x="-20" y="44" width="40" height="8"/>
         </g>
       </svg>
     </div>
@@ -417,8 +370,6 @@
     <h1 class="wordmark"><span class="bay-part">Bay</span><span class="quant-part">Quant</span></h1>
     <p class="tagline">Quantitative research and systematic strategy work, built where the fog meets the Golden Gate.</p>
     <p class="coords">37.7749° N · 122.4194° W</p>
-
-    <div class="scroll-cue"></div>
   </section>
 
   <section class="about" id="about">
@@ -462,36 +413,40 @@
       var svg = document.querySelector('.bridge-rig');
       if (!svg) return;
 
-      var deckY = 300;
-      var keypoints = [[40, 278], [360, 52], [720, 188], [1080, 52], [1400, 278]];
+      // Quadratic ax²+bx+c fitted through T1=(400,32), mid=(740,168), T2=(1080,78)
+      var deckY = 290;
+      var T1X = 400, T1Y = 32;
+      var T2X = 1080, T2Y = 78;
+      var ANC_LX = 20, ANC_LY = 252;
+      var ANC_RX = 1420, ANC_RY = 252;
+      var CA = -0.0009775, CB = 1.5141, CC = -417.2;
 
       function cableY(x) {
-        for (var i = 0; i < keypoints.length - 1; i++) {
-          var x0 = keypoints[i][0], y0 = keypoints[i][1];
-          var x1 = keypoints[i + 1][0], y1 = keypoints[i + 1][1];
-          if (x >= x0 && x <= x1) {
-            var t = (x - x0) / (x1 - x0);
-            var ft = (1 - Math.cos(t * Math.PI)) / 2;
-            return y0 + (y1 - y0) * ft;
-          }
+        if (x <= T1X) {
+          var t = (x - ANC_LX) / (T1X - ANC_LX);
+          return ANC_LY + (T1Y - ANC_LY) * t;
         }
-        return deckY;
+        if (x >= T2X) {
+          var t = (x - T2X) / (ANC_RX - T2X);
+          return T2Y + (ANC_RY - T2Y) * t;
+        }
+        return CA * x * x + CB * x + CC;
       }
 
       var step = 8;
       var near = '', far = '';
-      for (var x = 40; x <= 1400; x += step) {
+      for (var x = ANC_LX; x <= ANC_RX; x += step) {
         var y = cableY(x);
-        near += (x === 40 ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
-        far += (x === 40 ? 'M' : 'L') + x + ',' + (y + 16).toFixed(1) + ' ';
+        near += (x === ANC_LX ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
+        far += (x === ANC_LX ? 'M' : 'L') + x + ',' + (y + 16).toFixed(1) + ' ';
       }
       svg.querySelector('.cable-near').setAttribute('d', near);
       svg.querySelector('.cable-far').setAttribute('d', far);
 
       var hangers = svg.querySelector('.hangers');
       var frag = document.createDocumentFragment();
-      for (var hx = 64; hx <= 1376; hx += 32) {
-        if (Math.abs(hx - 360) < 40 || Math.abs(hx - 1080) < 40) continue;
+      for (var hx = 28; hx <= 1412; hx += 32) {
+        if (Math.abs(hx - T1X) < 48 || Math.abs(hx - T2X) < 40) continue;
         var hy = cableY(hx);
         var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', hx);
@@ -501,6 +456,79 @@
         frag.appendChild(line);
       }
       hangers.appendChild(frag);
+    })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (typeof gsap === 'undefined') return;
+
+      var hero = document.querySelector('.hero');
+      if (!hero) return;
+
+      var eqs = [
+        'α', 'β', 'σ', 'μ', 'ρ', 'λ', 'θ', 'Γ',
+        'E[r]', 'VaR(99%)', 'Δ = ∂C/∂S',
+        'PnL ~ N(μ,σ²)', 'Cov(rᵢ,rⱼ)', 'βᵢ = σᵢₘ/σ²ₘ',
+        'ICᵢ = corr(α,r)', 'ΔP ≈ −D·Δy', 'r = rf + β·MRP',
+        'dS = μSdt + σdWₜ',
+        'R = α + βRₘ + ε',
+        'Sharpe = (rₚ−rƒ)/σₚ',
+        'max(Sₜ − K, 0)',
+        'ln(S/S₀) ~ N(μt,σ²t)',
+        'E[rₚ] = Σwᵢrᵢ',
+        '∂V/∂t + ½σ²S²Vₛₛ',
+        'H = −Σpᵢ ln(pᵢ)',
+        'f(x) ~ e⁻ˣ²/²σ²',
+        'w* = Σ⁻¹μ',
+      ];
+
+      // Divide sky into a 5×6 grid so equations never bunch up
+      var COLS = 6, ROWS = 5, CW = 90 / COLS, CH = 38 / ROWS;
+      var grid = [];
+      for (var r = 0; r < ROWS; r++) {
+        for (var c = 0; c < COLS; c++) {
+          grid.push([
+            2 + c * CW + Math.random() * CW * 0.55,
+            3 + r * CH + Math.random() * CH * 0.55,
+          ]);
+        }
+      }
+      // Fisher-Yates shuffle so equation types spread across the grid
+      for (var j = grid.length - 1; j > 0; j--) {
+        var k = Math.floor(Math.random() * (j + 1));
+        var t = grid[j]; grid[j] = grid[k]; grid[k] = t;
+      }
+
+      eqs.forEach(function (text, i) {
+        var el = document.createElement('span');
+        el.className = 'eq';
+        el.textContent = text;
+        var pos = grid[i % grid.length];
+        el.style.left = pos[0] + '%';
+        el.style.top  = pos[1] + '%';
+        hero.appendChild(el);
+
+        function cycle() {
+          // Fresh random direction each cycle — horizontal spread, upward bias
+          var dx      = (Math.random() - 0.5) * 72;
+          var dy      = (Math.random() - 0.68) * 58;
+          var peak    = 0.28 + Math.random() * 0.22;
+          var moveDur = 5 + Math.random() * 6;
+          var pause   = 1.5 + Math.random() * 5;
+
+          gsap.timeline({ onComplete: function () { gsap.delayedCall(pause, cycle); } })
+            .set(el, { x: 0, y: 0, opacity: 0 })
+            .to(el, { opacity: peak, duration: 0.7, ease: 'power2.out' })
+            .to(el, { x: dx, y: dy, duration: moveDur, ease: 'power1.inOut' }, '<')
+            .to(el, { opacity: 0, duration: 1.0, ease: 'power2.in' }, '-=1.0');
+        }
+
+        // Stagger first appearances across 4 seconds so they don't all pop at once
+        gsap.delayedCall(Math.random() * 4 + i * 0.08, cycle);
+      });
     })();
   </script>
 
