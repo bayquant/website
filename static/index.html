@@ -229,6 +229,57 @@
       border: 1px solid rgba(47, 107, 83, 0.40);
     }
 
+    .oss-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bridge);
+      margin-top: 44px;
+      margin-bottom: 14px;
+    }
+
+    .lib-card {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 18px 20px;
+      border: 1px solid rgba(196, 48, 16, 0.20);
+      border-radius: 4px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.18s, background 0.18s;
+    }
+
+    .lib-card:hover {
+      border-color: rgba(196, 48, 16, 0.45);
+      background: rgba(196, 48, 16, 0.04);
+    }
+
+    .lib-name {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--bridge);
+      flex-shrink: 0;
+    }
+
+    .lib-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: #3a5060;
+      line-height: 1.5;
+    }
+
+    .lib-arrow {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--bridge);
+      opacity: 0.55;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
     /* ---------- Footer ---------- */
     footer {
       position: relative;
@@ -303,8 +354,8 @@
 
         <!-- water -->
         <rect x="0" y="300" width="1440" height="120" fill="#0ea8c4"/>
-        <rect class="reflection" x="362" y="300" width="76" height="120"/>
-        <rect class="reflection" x="1050" y="300" width="60" height="120" style="animation-delay:1.4s"/>
+        <rect class="reflection" x="358" y="300" width="76" height="120"/>
+        <rect class="reflection" x="1006" y="300" width="76" height="120" style="animation-delay:1.4s"/>
         <g class="swell">
           <path d="M0,310 Q60,301 120,310 T240,310 T360,310 T480,310 T600,310 T720,310 T840,310 T960,310 T1080,310 T1200,310 T1320,310 T1440,310"/>
           <path d="M1440,310 Q1500,301 1560,310 T1680,310 T1800,310 T1920,310 T2040,310 T2160,310 T2280,310 T2400,310 T2520,310 T2640,310 T2760,310 T2880,310"/>
@@ -341,8 +392,8 @@
         <rect class="deck-truss" x="0" y="290" width="1440" height="12"/>
         <line class="deck-rail" x1="0" y1="290" x2="1440" y2="290"/>
 
-        <!-- South tower — dominant, x=400 -->
-        <g class="tower" transform="translate(400,0)">
+        <!-- South tower — dominant, x=396 (aligned with cable loop step) -->
+        <g class="tower" transform="translate(396,0)">
           <rect class="tower-pier" x="-52" y="290" width="104" height="56" rx="2"/>
           <rect class="tower-body" x="-44" y="18" width="16" height="272"/>
           <rect class="tower-body" x="28" y="18" width="16" height="272"/>
@@ -353,16 +404,16 @@
           <rect class="tower-cap" x="-29" y="0" width="58" height="8"/>
         </g>
 
-        <!-- North tower — receding background, x=1080 -->
-        <g class="tower" transform="translate(1080,0)" opacity="0.80">
-          <rect class="tower-pier" x="-40" y="290" width="80" height="56" rx="2"/>
-          <rect class="tower-body" x="-32" y="62" width="12" height="228"/>
-          <rect class="tower-body" x="20" y="62" width="12" height="228"/>
-          <rect class="tower-body" x="-32" y="119" width="64" height="9"/>
-          <rect class="tower-body" x="-32" y="169" width="64" height="9"/>
-          <rect class="tower-body" x="-32" y="219" width="64" height="9"/>
-          <rect class="tower-cap" x="-32" y="52" width="64" height="10"/>
-          <rect class="tower-cap" x="-20" y="44" width="40" height="8"/>
+        <!-- North tower — identical to south tower, x=1044 (mirror of 396 from right edge) -->
+        <g class="tower" transform="translate(1044,0)">
+          <rect class="tower-pier" x="-52" y="290" width="104" height="56" rx="2"/>
+          <rect class="tower-body" x="-44" y="18" width="16" height="272"/>
+          <rect class="tower-body" x="28" y="18" width="16" height="272"/>
+          <rect class="tower-body" x="-44" y="86" width="88" height="10"/>
+          <rect class="tower-body" x="-44" y="146" width="88" height="10"/>
+          <rect class="tower-body" x="-44" y="206" width="88" height="10"/>
+          <rect class="tower-cap" x="-44" y="8" width="88" height="10"/>
+          <rect class="tower-cap" x="-29" y="0" width="58" height="8"/>
         </g>
       </svg>
     </div>
@@ -392,6 +443,13 @@
       <span>Risk Modeling</span>
       <span>Backtesting</span>
     </div>
+
+    <div class="oss-label">Open source</div>
+    <a class="lib-card" href="https://bayquant.github.io/xpectral/" target="_blank" rel="noopener">
+      <span class="lib-name">xpectral</span>
+      <span class="lib-desc">Python library for systematic strategy research and quantitative analysis.</span>
+      <span class="lib-arrow">↗</span>
+    </a>
   </section>
 
   <footer>
@@ -413,23 +471,22 @@
       var svg = document.querySelector('.bridge-rig');
       if (!svg) return;
 
-      // Quadratic ax²+bx+c fitted through T1=(400,32), mid=(740,168), T2=(1080,78)
+      // T1X=396 and T2X=1044 land exactly on cable loop steps (20+8k),
+      // so the cable minimum is precisely centered in each tower column.
+      // Side-span slopes match the main-span slope (±0.895) at both tower peaks,
+      // making the V shape inside each column symmetric.
       var deckY = 290;
-      var T1X = 400, T1Y = 32;
-      var T2X = 1080, T2Y = 78;
+      var T1X = 396, T1Y = 30;
+      var T2X = 1044, T2Y = 30;
       var ANC_LX = 20, ANC_LY = 252;
       var ANC_RX = 1420, ANC_RY = 252;
-      var CA = -0.0009775, CB = 1.5141, CC = -417.2;
+      var CA   = -0.001381, CB   =  1.9886, CC   = -540.9;   // main span (vertex x=720)
+      var CA_L = -0.0008099, CB_L = -0.2540, CC_L =  257.4;  // left side span
+      var CA_R = -0.0008099, CB_R =  2.5860, CC_R = -1787.0; // right side span (mirror)
 
       function cableY(x) {
-        if (x <= T1X) {
-          var t = (x - ANC_LX) / (T1X - ANC_LX);
-          return ANC_LY + (T1Y - ANC_LY) * t;
-        }
-        if (x >= T2X) {
-          var t = (x - T2X) / (ANC_RX - T2X);
-          return T2Y + (ANC_RY - T2Y) * t;
-        }
+        if (x <= T1X) return CA_L * x * x + CB_L * x + CC_L;
+        if (x >= T2X) return CA_R * x * x + CB_R * x + CC_R;
         return CA * x * x + CB * x + CC;
       }
 
@@ -446,7 +503,7 @@
       var hangers = svg.querySelector('.hangers');
       var frag = document.createDocumentFragment();
       for (var hx = 28; hx <= 1412; hx += 32) {
-        if (Math.abs(hx - T1X) < 48 || Math.abs(hx - T2X) < 40) continue;
+        if (Math.abs(hx - T1X) < 50 || Math.abs(hx - T2X) < 50) continue;
         var hy = cableY(hx);
         var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', hx);
