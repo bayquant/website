@@ -1,0 +1,11 @@
+{% extends "brain_base.html" %}
+{% block title %}{{ title }} — Brain{% endblock %}
+{% block content %}
+<a class="back-link" href="/brain">&larr; All notes</a>
+<article class="note-card">
+  <div class="note-content">
+    <h1>{{ title }}</h1>
+    {{ html | safe }}
+  </div>
+</article>
+{% endblock %}

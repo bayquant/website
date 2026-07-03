@@ -6,7 +6,7 @@
   <title>BayQuant — Quantitative Research</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --abyss: #060f18;
@@ -70,10 +70,11 @@
     .wordmark {
       position: relative;
       z-index: 3;
-      font-family: var(--font-display);
-      font-size: clamp(2.6rem, 7vw, 5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
+      font-family: var(--font-mono);
+      font-size: clamp(2.3rem, 6.2vw, 4.2rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
     .wordmark .bay-part { color: #ffffff; }
     .wordmark .quant-part { color: var(--bridge); }
@@ -176,7 +177,7 @@
     /* ---------- About ---------- */
     .about {
       position: relative;
-      padding: 100px 24px 88px;
+      padding: 84px 24px 88px;
       max-width: 760px;
       margin: 0 auto;
     }
@@ -280,6 +281,130 @@
       flex-shrink: 0;
     }
 
+    /* ---------- Top nav ---------- */
+    .topnav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px clamp(20px, 4vw, 46px);
+    }
+
+    .nav-brand {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.82);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .nav-brand:hover { color: #ffffff; }
+
+    .nav-brain {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fog);
+      text-decoration: none;
+      padding: 9px 17px;
+      border: 1px solid rgba(232, 239, 235, 0.45);
+      border-radius: 999px;
+      background: rgba(6, 15, 24, 0.16);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+    .nav-brain::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ember);
+      box-shadow: 0 0 8px var(--ember);
+    }
+    .nav-brain:hover {
+      border-color: var(--ember);
+      background: rgba(224, 96, 48, 0.18);
+      color: #ffffff;
+    }
+
+    /* ---------- Brain feature ---------- */
+    .brain-feature {
+      position: relative;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 76px 24px 0;
+    }
+
+    .brain-panel {
+      position: relative;
+      border: 1px solid rgba(196, 48, 16, 0.22);
+      border-left: 3px solid var(--bridge);
+      border-radius: 6px;
+      padding: 34px 34px 36px;
+      background: linear-gradient(180deg, rgba(28, 110, 130, 0.06), rgba(28, 110, 130, 0));
+    }
+
+    .brain-panel h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.85rem, 3.6vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin: 12px 0 16px;
+    }
+
+    .brain-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .brain-topics span {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--bay);
+      border: 1px solid rgba(28, 110, 130, 0.34);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .brain-panel p {
+      font-family: var(--font-body);
+      font-size: 1.06rem;
+      color: #29414f;
+      max-width: 60ch;
+      margin-bottom: 26px;
+    }
+
+    .brain-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ffffff;
+      background: var(--bridge);
+      text-decoration: none;
+      padding: 13px 22px;
+      border-radius: 4px;
+      transition: background 0.18s ease;
+    }
+    .brain-cta:hover { background: var(--ember); }
+    .brain-cta .arrow { transition: transform 0.18s ease; }
+    .brain-cta:hover .arrow { transform: translateX(4px); }
+
     /* ---------- Footer ---------- */
     footer {
       position: relative;
@@ -299,31 +424,15 @@
     .footer-rule path { stroke: var(--bridge); stroke-width: 2; fill: none; opacity: 0.5; }
 
     footer .footer-mark {
-      font-family: var(--font-display);
-      font-weight: 700;
+      font-family: var(--font-mono);
+      font-weight: 600;
       color: var(--fog);
-      letter-spacing: -0.01em;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
       margin-bottom: 14px;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
     }
     footer .footer-mark .quant-part { color: var(--bridge); }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 26px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      font-size: 0.92rem;
-    }
-
-    .footer-links a {
-      color: var(--fog);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s ease, color 0.15s ease;
-    }
-    .footer-links a:hover { border-color: var(--ember); color: var(--ember); }
 
     footer .fine-print {
       font-size: 0.75rem;
@@ -343,6 +452,10 @@
 <body>
 
   <section class="hero">
+    <nav class="topnav">
+      <a class="nav-brand" href="/">BayQuant</a>
+      <a class="nav-brain" href="/brain">Brain</a>
+    </nav>
     <div class="bridge-scene">
       <svg class="bridge-rig" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
         <defs>
@@ -423,6 +536,21 @@
     <p class="coords">37.7749° N · 122.4194° W</p>
   </section>
 
+  <section class="brain-feature">
+    <div class="brain-panel">
+      <div class="section-label">Public vault</div>
+      <h2>The Brain</h2>
+      <div class="brain-topics">
+        <span>Trading Systems</span>
+        <span>Software Architecture</span>
+        <span>Infrastructure</span>
+        <span>Tooling</span>
+      </div>
+      <p>An open vault of working notes — the systems, patterns, and tools I'm thinking through, written as I learn and published as I go.</p>
+      <a class="brain-cta" href="/brain">Open the Brain <span class="arrow">→</span></a>
+    </div>
+  </section>
+
   <section class="about" id="about">
     <div class="section-label">About</div>
     <h2>Built where the fog meets the grid.</h2>
@@ -457,12 +585,6 @@
       <path d="M0,9 Q60,2 120,9 T240,9 T360,9 T480,9 T600,9 T720,9 T840,9 T960,9 T1080,9 T1200,9 T1320,9 T1440,9" />
     </svg>
     <div class="footer-mark">Bay<span class="quant-part">Quant</span></div>
-    <div class="footer-links">
-      <a href="mailto:you@example.com">Email</a>
-      <a href="https://github.com/your-handle" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://linkedin.com/in/your-handle" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://x.com/your-handle" target="_blank" rel="noopener">X</a>
-    </div>
     <div class="fine-print">San Francisco, CA · Pacific Coast · © 2026 BayQuant</div>
   </footer>
 
