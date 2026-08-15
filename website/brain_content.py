@@ -1,6 +1,6 @@
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Imports
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Standard library imports
 import re
 import tarfile
@@ -8,12 +8,12 @@ import urllib.error
 import urllib.request
 from io import BytesIO
 
-# Other imports
+# Third-party imports
 import markdown
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Globals and constants
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 __all__ = ["load_brain_content"]
 
 BRAIN_TARBALL_URL = "https://codeload.github.com/bayquant/brain/tar.gz/refs/heads/main"
@@ -24,9 +24,9 @@ _TAGS_RE = re.compile(r"tags:\s*\[(.*?)\]")
 _WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 _LEADING_H1_RE = re.compile(r"^\s*<h1>.*?</h1>\s*", re.DOTALL)
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # General API
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 def load_brain_content() -> tuple[dict[str, dict], str]:
     # Download the bayquant/brain repo as a tarball and turn every markdown note
     # into rendered HTML. Returns a mapping of slug -> {title, tags, html} and
@@ -61,9 +61,9 @@ def load_brain_content() -> tuple[dict[str, dict], str]:
     brain_css = css_text.replace(".markdown-preview-view", ".note-content")
     return notes, brain_css
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Private API
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 def _slugify(segment: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", segment.lower()).strip("-")
 
