@@ -1,6 +1,6 @@
 # BayQuant
 
-A landing page for BayQuant — quantitative research and systematic strategy work,
+A landing page for BayQuant: quantitative research and systematic strategy work,
 served by FastAPI and containerized with Docker. It also serves a browsable copy
 of the [bayquant/brain](https://github.com/bayquant/brain) notes vault at `/brain`.
 
@@ -28,10 +28,10 @@ uvicorn website.main:app --reload
 
 ## Routes
 
-- `/` — the landing page
-- `/health` — liveness check
-- `/brain` — index of notes fetched from the vault
-- `/brain/{slug}` — a single rendered note
+- `/`: the landing page
+- `/health`: liveness check
+- `/brain`: index of notes fetched from the vault
+- `/brain/{slug}`: a single rendered note
 
 ## Project layout
 
@@ -58,7 +58,7 @@ all application code lives in the `website/` package.
 At startup the app downloads the [bayquant/brain](https://github.com/bayquant/brain)
 vault, renders each markdown note to HTML (resolving Obsidian `[[wiki-links]]`),
 and serves them styled with the vault's own `brain.css`. Notes refresh on every
-container restart — no image rebuild needed. If GitHub is unreachable at startup
+container restart: no image rebuild needed. If GitHub is unreachable at startup
 the site still runs; `/brain` just reports that notes are unavailable.
 
 ## Editing content
