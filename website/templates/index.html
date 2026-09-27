@@ -3,713 +3,212 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BayQuant — Quantitative Research</title>
+  <title>BayQuant</title>
+  <meta name="description" content="Quantitative research from San Francisco." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Public+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --abyss: #060f18;
-      --pacific: #0b3a52;
-      --bay: #1c6e82;
-      --bridge: #c43010;
-      --ember: #e06030;
-      --fog: #e8efeb;
-      --mist: #eef2ee;
-      --kelp: #2f6b53;
-      --ink: #07141c;
-      --muted: #4f6877;
+      --fog: #e9ecec;
+      --rule: #cdd4d6;
+      --slate: #1e2b31;
+      --pacific: #566971;
+      --orange: #c0362c;
 
-      --font-display: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
-      --font-body: "Source Serif 4", Georgia, serif;
-      --font-mono: "IBM Plex Mono", "SF Mono", "Courier New", monospace;
+      --serif: "Newsreader", Georgia, serif;
+      --sans: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+      --gutter: clamp(20px, 6vw, 96px);
+    }
+
+    /* The background follows the light in San Francisco, set by the script below. */
+    :root[data-daypart="morning"] { --fog: #e6eaeb; }
+    :root[data-daypart="midday"] { --fog: #eef0f0; }
+    :root[data-daypart="golden"] { --fog: #eeebe8; }
+    :root[data-daypart="night"] { --fog: #e5e7eb; }
+
+    @media (prefers-color-scheme: dark) {
+      :root,
+      :root[data-daypart] {
+        --fog: #161b1e;
+        --rule: #2c373c;
+        --slate: #d9e0e2;
+        --pacific: #8fa0a7;
+        --orange: #e0553f;
+      }
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; }
+    html { background: var(--fog); }
 
     body {
-      font-family: var(--font-body);
-      color: var(--ink);
-      background: #f4f8fa;
-      line-height: 1.6;
-    }
-
-    a:focus-visible {
-      outline: 2px solid var(--ember);
-      outline-offset: 3px;
-    }
-
-    /* ---------- Hero ---------- */
-    .hero {
-      position: relative;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      overflow: hidden;
-      background: linear-gradient(180deg, #0a4599 0%, #1668c4 28%, #3498d8 60%, #5bbdec 85%, #7ccff5 100%);
-      color: var(--fog);
-      padding: 14vh 24px 0;
-      text-align: center;
+      color: var(--slate);
+      font-family: var(--serif);
+      font-size: 1.125rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 72% 8%, rgba(255, 255, 255, 0.18) 0%, transparent 38%),
-        radial-gradient(circle at 20% 5%, rgba(255, 245, 200, 0.08) 0%, transparent 30%);
-      pointer-events: none;
-      z-index: 1;
+    a {
+      color: inherit;
+      text-decoration-line: underline;
+      text-decoration-color: var(--rule);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.22em;
+      transition: text-decoration-color 0.2s ease;
+    }
+    a:hover { text-decoration-color: var(--orange); }
+    a:focus-visible {
+      outline: 2px solid var(--orange);
+      outline-offset: 3px;
+      border-radius: 2px;
     }
 
-    .wordmark {
-      position: relative;
-      z-index: 3;
-      font-family: var(--font-mono);
-      font-size: clamp(2.3rem, 6.2vw, 4.2rem);
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    /* ---------- Header ---------- */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 32px var(--gutter);
+      font-family: var(--sans);
+      font-size: 0.9375rem;
     }
-    .wordmark .bay-part { color: #ffffff; }
-    .wordmark .quant-part { color: var(--bridge); }
-
-    .tagline {
-      position: relative;
-      z-index: 3;
-      margin-top: 18px;
-      font-family: var(--font-body);
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: rgba(255, 255, 255, 0.92);
-      max-width: 560px;
-      font-weight: 400;
+    .brand {
+      font-weight: 500;
+      text-decoration: none;
     }
+    .site-nav { display: flex; gap: 28px; }
+    .site-nav a {
+      color: var(--pacific);
+      text-decoration: none;
+    }
+    .site-nav a:hover { color: var(--slate); }
 
-    .coords {
-      position: relative;
-      z-index: 3;
-      margin-top: 28px;
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ember);
-      opacity: 0.9;
+    /* ---------- Content ---------- */
+    main {
+      flex: 1;
+      padding: clamp(56px, 16vh, 160px) var(--gutter) 96px;
     }
 
-    /* ---------- Golden Gate illustration ---------- */
-    .bridge-scene {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: min(58vh, 480px);
-      min-height: 280px;
-      z-index: 1;
+    .intro {
+      max-width: 46rem;
+      font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+      line-height: 1.45;
+      letter-spacing: -0.005em;
     }
-    .bridge-rig { width: 100%; height: 100%; display: block; }
-
-    .tower-body { fill: var(--bridge); }
-    .tower-cap { fill: var(--bridge); }
-    .tower-pier { fill: #5a86a0; }
-
-    .cable-far { stroke: var(--bridge); stroke-width: 3.5; fill: none; opacity: 0.65; }
-    .cable-near { stroke: var(--bridge); stroke-width: 5; fill: none; }
-    .hangers line { stroke: var(--bridge); stroke-width: 1.6; opacity: 0.9; }
-    .deck-truss { fill: #8a2008; }
-    .deck-rail { stroke: var(--ember); stroke-width: 1.5; opacity: 0.7; }
-
-    .water-floor { fill: #0ea8c4; }
-    .reflection { fill: url(#reflectionGradient); mix-blend-mode: screen; animation: shimmer 6s ease-in-out infinite; }
-    @keyframes shimmer { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.9; } }
-
-    .swell path { stroke: rgba(232, 239, 235, 0.75); stroke-width: 2; fill: none; }
-    .swell.swell--2 path { stroke: rgba(232, 239, 235, 0.45); stroke-width: 1.5; }
-    .swell { animation: swellDrift 16s linear infinite; }
-    .swell.swell--2 { animation-duration: 24s; animation-direction: reverse; }
-    @keyframes swellDrift {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-1440px); }
+    .intro p + p {
+      margin-top: 0.8em;
+      color: var(--pacific);
     }
 
-    .gull { stroke: var(--fog); stroke-width: 2; fill: none; opacity: 0.85; stroke-linecap: round; }
-    .gull-1 { animation: gullDrift1 48s ease-in-out infinite; }
-    .gull-2 { animation: gullDrift2 60s ease-in-out infinite; }
-    @keyframes gullDrift1 {
-      0%, 100% { transform: translate(0, 0); }
-      50% { transform: translate(140px, -22px); }
+    .index {
+      margin-top: clamp(64px, 12vh, 120px);
+      max-width: 46rem;
+      list-style: none;
     }
-    @keyframes gullDrift2 {
-      0%, 100% { transform: translate(0, 0); }
-      50% { transform: translate(-110px, 18px); }
+    .index li {
+      display: grid;
+      grid-template-columns: 9rem 1fr;
+      gap: 24px;
+      padding: 20px 0;
+      border-top: 1px solid var(--rule);
+    }
+    .index li:last-child { border-bottom: 1px solid var(--rule); }
+    .index h2 {
+      font-family: var(--sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      line-height: 1.9;
     }
 
-    .signal-dot { fill: var(--fog); animation: twinkle 5s ease-in-out infinite; }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.25; }
-      50% { opacity: 0.9; }
-    }
-
-    .eq {
-      position: absolute;
-      font-family: var(--font-mono);
-      font-size: clamp(0.62rem, 1.05vw, 0.85rem);
-      color: var(--fog);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 2;
-      will-change: transform, opacity;
-      white-space: nowrap;
-      user-select: none;
-      letter-spacing: 0.04em;
+    /* ---------- Footer ---------- */
+    .site-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 32px var(--gutter) 40px;
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--pacific);
+      font-variant-numeric: tabular-nums;
     }
 
     @media (max-width: 640px) {
-      .bridge-scene { height: 46vh; min-height: 220px; }
-    }
-
-    /* ---------- About ---------- */
-    .about {
-      position: relative;
-      padding: 84px 24px 88px;
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--bridge);
-      margin-bottom: 18px;
-    }
-
-    .about h2 {
-      font-family: var(--font-display);
-      font-size: clamp(1.7rem, 3.2vw, 2.3rem);
-      font-weight: 700;
-      color: var(--ink);
-      margin-bottom: 24px;
-      letter-spacing: -0.01em;
-    }
-
-    .about p {
-      font-family: var(--font-body);
-      font-size: 1.08rem;
-      color: #1e3040;
-      margin-bottom: 18px;
-    }
-
-    .about p.lede {
-      font-size: 1.22rem;
-      color: var(--ink);
-      font-weight: 600;
-    }
-
-    .focus-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 28px;
-    }
-
-    .focus-tags span {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      padding: 7px 14px;
-      border-radius: 999px;
-      background: rgba(47, 107, 83, 0.10);
-      color: var(--kelp);
-      border: 1px solid rgba(47, 107, 83, 0.40);
-    }
-
-    .oss-label {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--bridge);
-      margin-top: 44px;
-      margin-bottom: 14px;
-    }
-
-    .lib-card {
-      display: flex;
-      align-items: baseline;
-      gap: 16px;
-      padding: 18px 20px;
-      border: 1px solid rgba(196, 48, 16, 0.20);
-      border-radius: 4px;
-      text-decoration: none;
-      color: inherit;
-      transition: border-color 0.18s, background 0.18s;
-    }
-
-    .lib-card:hover {
-      border-color: rgba(196, 48, 16, 0.45);
-      background: rgba(196, 48, 16, 0.04);
-    }
-
-    .lib-name {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--bridge);
-      flex-shrink: 0;
-    }
-
-    .lib-desc {
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      color: #3a5060;
-      line-height: 1.5;
-    }
-
-    .lib-arrow {
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
-      color: var(--bridge);
-      opacity: 0.55;
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-
-    /* ---------- Top nav ---------- */
-    .topnav {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 22px clamp(20px, 4vw, 46px);
-    }
-
-    .nav-brand {
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.82);
-      text-decoration: none;
-      transition: color 0.15s ease;
-    }
-    .nav-brand:hover { color: #ffffff; }
-
-    .nav-brain {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--fog);
-      text-decoration: none;
-      padding: 9px 17px;
-      border: 1px solid rgba(232, 239, 235, 0.45);
-      border-radius: 999px;
-      background: rgba(6, 15, 24, 0.16);
-      -webkit-backdrop-filter: blur(4px);
-      backdrop-filter: blur(4px);
-      transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
-    }
-    .nav-brain::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--ember);
-      box-shadow: 0 0 8px var(--ember);
-    }
-    .nav-brain:hover {
-      border-color: var(--ember);
-      background: rgba(224, 96, 48, 0.18);
-      color: #ffffff;
-    }
-
-    /* ---------- Brain feature ---------- */
-    .brain-feature {
-      position: relative;
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 76px 24px 0;
-    }
-
-    .brain-panel {
-      position: relative;
-      border: 1px solid rgba(196, 48, 16, 0.22);
-      border-left: 3px solid var(--bridge);
-      border-radius: 6px;
-      padding: 34px 34px 36px;
-      background: linear-gradient(180deg, rgba(28, 110, 130, 0.06), rgba(28, 110, 130, 0));
-    }
-
-    .brain-panel h2 {
-      font-family: var(--font-display);
-      font-size: clamp(1.85rem, 3.6vw, 2.5rem);
-      font-weight: 700;
-      letter-spacing: -0.015em;
-      color: var(--ink);
-      margin: 12px 0 16px;
-    }
-
-    .brain-topics {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 22px;
-    }
-    .brain-topics span {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--bay);
-      border: 1px solid rgba(28, 110, 130, 0.34);
-      padding: 5px 11px;
-      border-radius: 999px;
-    }
-
-    .brain-panel p {
-      font-family: var(--font-body);
-      font-size: 1.06rem;
-      color: #29414f;
-      max-width: 60ch;
-      margin-bottom: 26px;
-    }
-
-    .brain-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #ffffff;
-      background: var(--bridge);
-      text-decoration: none;
-      padding: 13px 22px;
-      border-radius: 4px;
-      transition: background 0.18s ease;
-    }
-    .brain-cta:hover { background: var(--ember); }
-    .brain-cta .arrow { transition: transform 0.18s ease; }
-    .brain-cta:hover .arrow { transform: translateX(4px); }
-
-    /* ---------- Footer ---------- */
-    footer {
-      position: relative;
-      background: var(--abyss);
-      color: rgba(232, 239, 235, 0.78);
-      padding: 52px 24px 36px;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .footer-rule {
-      display: block;
-      width: 100%;
-      height: 18px;
-      margin-bottom: 30px;
-    }
-    .footer-rule path { stroke: var(--bridge); stroke-width: 2; fill: none; opacity: 0.5; }
-
-    footer .footer-mark {
-      font-family: var(--font-mono);
-      font-weight: 600;
-      color: var(--fog);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-      font-size: 0.95rem;
-    }
-    footer .footer-mark .quant-part { color: var(--bridge); }
-
-    footer .fine-print {
-      font-size: 0.75rem;
-      color: rgba(232, 239, 235, 0.45);
-      font-family: var(--font-mono);
+      .index li { grid-template-columns: 1fr; gap: 4px; }
+      .site-footer { flex-direction: column; gap: 4px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-      }
+      a { transition: none; }
     }
   </style>
 </head>
 <body>
-
-  <section class="hero">
-    <nav class="topnav">
-      <a class="nav-brand" href="/">BayQuant</a>
-      <a class="nav-brain" href="/brain">Brain</a>
+  <header class="site-header">
+    <a class="brand" href="/">BayQuant</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/brain">Notes</a>
+      <a href="https://bayquant.github.io/xpectral/">xpectral</a>
     </nav>
-    <div class="bridge-scene">
-      <svg class="bridge-rig" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="reflectionGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#c43010" stop-opacity="0.65"/>
-            <stop offset="100%" stop-color="#c43010" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
+  </header>
 
-        <!-- water -->
-        <rect x="0" y="300" width="1440" height="120" fill="#0ea8c4"/>
-        <rect class="reflection" x="358" y="300" width="76" height="120"/>
-        <rect class="reflection" x="1006" y="300" width="76" height="120" style="animation-delay:1.4s"/>
-        <g class="swell">
-          <path d="M0,310 Q60,301 120,310 T240,310 T360,310 T480,310 T600,310 T720,310 T840,310 T960,310 T1080,310 T1200,310 T1320,310 T1440,310"/>
-          <path d="M1440,310 Q1500,301 1560,310 T1680,310 T1800,310 T1920,310 T2040,310 T2160,310 T2280,310 T2400,310 T2520,310 T2640,310 T2760,310 T2880,310"/>
-        </g>
-        <g class="swell swell--2">
-          <path d="M0,324 Q60,316 120,324 T240,324 T360,324 T480,324 T600,324 T720,324 T840,324 T960,324 T1080,324 T1200,324 T1320,324 T1440,324"/>
-          <path d="M1440,324 Q1500,316 1560,324 T1680,324 T1800,324 T1920,324 T2040,324 T2160,324 T2280,324 T2400,324 T2520,324 T2640,324 T2760,324 T2880,324"/>
-        </g>
-
-        <!-- sky: gulls + stars -->
-        <g class="gull gull-1" transform="translate(200,65)">
-          <path d="M-10,0 Q-5,-7 0,0 Q5,-7 10,0"/>
-        </g>
-        <g class="gull gull-2" transform="translate(1120,100)">
-          <path d="M-9,0 Q-4.5,-6 0,0 Q4.5,-6 9,0"/>
-        </g>
-        <g class="signal-dots">
-          <circle class="signal-dot" cx="120" cy="35" r="1.5" style="animation-delay:0s"/>
-          <circle class="signal-dot" cx="580" cy="22" r="1.4" style="animation-delay:1.2s"/>
-          <circle class="signal-dot" cx="880" cy="48" r="1.5" style="animation-delay:0.4s"/>
-          <circle class="signal-dot" cx="1300" cy="30" r="1.4" style="animation-delay:1.8s"/>
-        </g>
-
-        <!-- cable anchorage blocks at shore -->
-        <rect class="tower-pier" x="0" y="260" width="56" height="42" rx="2"/>
-        <rect class="tower-pier" x="1384" y="260" width="56" height="42" rx="2"/>
-
-        <!-- bridge structure (cables + hangers filled by JS) -->
-        <g class="hangers"></g>
-        <path class="cable-far" d=""/>
-        <path class="cable-near" d=""/>
-
-        <!-- stiffening truss + rail -->
-        <rect class="deck-truss" x="0" y="290" width="1440" height="12"/>
-        <line class="deck-rail" x1="0" y1="290" x2="1440" y2="290"/>
-
-        <!-- South tower: dominant, x=396 (aligned with cable loop step) -->
-        <g class="tower" transform="translate(396,0)">
-          <rect class="tower-pier" x="-52" y="290" width="104" height="56" rx="2"/>
-          <rect class="tower-body" x="-44" y="18" width="16" height="272"/>
-          <rect class="tower-body" x="28" y="18" width="16" height="272"/>
-          <rect class="tower-body" x="-44" y="86" width="88" height="10"/>
-          <rect class="tower-body" x="-44" y="146" width="88" height="10"/>
-          <rect class="tower-body" x="-44" y="206" width="88" height="10"/>
-          <rect class="tower-cap" x="-44" y="8" width="88" height="10"/>
-          <rect class="tower-cap" x="-29" y="0" width="58" height="8"/>
-        </g>
-
-        <!-- North tower: identical to south tower, x=1044 (mirror of 396 from right edge) -->
-        <g class="tower" transform="translate(1044,0)">
-          <rect class="tower-pier" x="-52" y="290" width="104" height="56" rx="2"/>
-          <rect class="tower-body" x="-44" y="18" width="16" height="272"/>
-          <rect class="tower-body" x="28" y="18" width="16" height="272"/>
-          <rect class="tower-body" x="-44" y="86" width="88" height="10"/>
-          <rect class="tower-body" x="-44" y="146" width="88" height="10"/>
-          <rect class="tower-body" x="-44" y="206" width="88" height="10"/>
-          <rect class="tower-cap" x="-44" y="8" width="88" height="10"/>
-          <rect class="tower-cap" x="-29" y="0" width="58" height="8"/>
-        </g>
-      </svg>
+  <main>
+    <div class="intro">
+      <!-- Replace with your own bio. -->
+      <p>I'm a quantitative researcher in San Francisco, working where systematic trading, statistics and software meet.</p>
+      <p>My work covers systematic strategies, market microstructure, machine learning for signals, risk modeling and backtesting.</p>
     </div>
 
-    <h1 class="wordmark"><span class="bay-part">Bay</span><span class="quant-part">Quant</span></h1>
-    <p class="tagline">Quantitative research and systematic strategy work, built where the fog meets the Golden Gate.</p>
-    <p class="coords">37.7749° N · 122.4194° W</p>
-  </section>
+    <ul class="index">
+      <li>
+        <h2>Notes</h2>
+        <p>An open vault of working notes on trading systems, software architecture, infrastructure and tooling. <a href="/brain">Browse the notes</a></p>
+      </li>
+      <li>
+        <h2>Open source</h2>
+        <p><a href="https://bayquant.github.io/xpectral/">xpectral</a>, a Python library for systematic strategy research and quantitative analysis.</p>
+      </li>
+    </ul>
+  </main>
 
-  <section class="brain-feature">
-    <div class="brain-panel">
-      <div class="section-label">Public vault</div>
-      <h2>The Brain</h2>
-      <div class="brain-topics">
-        <span>Trading Systems</span>
-        <span>Software Architecture</span>
-        <span>Infrastructure</span>
-        <span>Tooling</span>
-      </div>
-      <p>An open vault of working notes: the systems, patterns, and tools I'm thinking through, written as I learn and published as I go.</p>
-      <a class="brain-cta" href="/brain">Open the Brain <span class="arrow">→</span></a>
-    </div>
-  </section>
-
-  <section class="about" id="about">
-    <div class="section-label">About</div>
-    <h2>Built where the fog meets the grid.</h2>
-    <p class="lede">I'm a quantitative researcher based in San Francisco, working where systematic trading, statistics, and software meet.</p>
-    <p>
-      This is a placeholder bio. Swap in your real background here. Talk about what you research,
-      the kinds of markets or instruments you focus on, and the philosophy behind your approach
-      (e.g. data-driven, risk-aware, built for the long run rather than the next tick).
-    </p>
-    <p>
-      Like the fog that rolls through the towers of the Golden Gate, the clearest signals are usually
-      the quietest. BayQuant is where that research gets written up, tested, and shared.
-    </p>
-    <div class="focus-tags">
-      <span>Systematic Strategies</span>
-      <span>Market Microstructure</span>
-      <span>Machine Learning</span>
-      <span>Risk Modeling</span>
-      <span>Backtesting</span>
-    </div>
-
-    <div class="oss-label">Open source</div>
-    <a class="lib-card" href="https://bayquant.github.io/xpectral/" target="_blank" rel="noopener">
-      <span class="lib-name">xpectral</span>
-      <span class="lib-desc">Python library for systematic strategy research and quantitative analysis.</span>
-      <span class="lib-arrow">↗</span>
-    </a>
-  </section>
-
-  <footer>
-    <svg class="footer-rule" viewBox="0 0 1440 18" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,9 Q60,2 120,9 T240,9 T360,9 T480,9 T600,9 T720,9 T840,9 T960,9 T1080,9 T1200,9 T1320,9 T1440,9" />
-    </svg>
-    <div class="footer-mark">Bay<span class="quant-part">Quant</span></div>
-    <div class="fine-print">San Francisco, CA · Pacific Coast · © 2026 BayQuant</div>
+  <footer class="site-footer">
+    <span id="sf-time" hidden></span>
+    <span>© 2026 BayQuant</span>
   </footer>
 
   <script>
     (function () {
-      var svg = document.querySelector('.bridge-rig');
-      if (!svg) return;
-
-      // T1X=396 and T2X=1044 land exactly on cable loop steps (20+8k),
-      // so the cable minimum is precisely centered in each tower column.
-      // Side-span slopes match the main-span slope (±0.895) at both tower peaks,
-      // making the V shape inside each column symmetric.
-      var deckY = 290;
-      var T1X = 396, T1Y = 30;
-      var T2X = 1044, T2Y = 30;
-      var ANC_LX = 20, ANC_LY = 252;
-      var ANC_RX = 1420, ANC_RY = 252;
-      var CA   = -0.001381, CB   =  1.9886, CC   = -540.9;   // main span (vertex x=720)
-      var CA_L = -0.0008099, CB_L = -0.2540, CC_L =  257.4;  // left side span
-      var CA_R = -0.0008099, CB_R =  2.5860, CC_R = -1787.0; // right side span (mirror)
-
-      function cableY(x) {
-        if (x <= T1X) return CA_L * x * x + CB_L * x + CC_L;
-        if (x >= T2X) return CA_R * x * x + CB_R * x + CC_R;
-        return CA * x * x + CB * x + CC;
-      }
-
-      var step = 8;
-      var near = '', far = '';
-      for (var x = ANC_LX; x <= ANC_RX; x += step) {
-        var y = cableY(x);
-        near += (x === ANC_LX ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
-        far += (x === ANC_LX ? 'M' : 'L') + x + ',' + (y + 16).toFixed(1) + ' ';
-      }
-      svg.querySelector('.cable-near').setAttribute('d', near);
-      svg.querySelector('.cable-far').setAttribute('d', far);
-
-      var hangers = svg.querySelector('.hangers');
-      var frag = document.createDocumentFragment();
-      for (var hx = 28; hx <= 1412; hx += 32) {
-        if (Math.abs(hx - T1X) < 50 || Math.abs(hx - T2X) < 50) continue;
-        var hy = cableY(hx);
-        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', hx);
-        line.setAttribute('y1', hy.toFixed(1));
-        line.setAttribute('x2', hx);
-        line.setAttribute('y2', deckY);
-        frag.appendChild(line);
-      }
-      hangers.appendChild(frag);
-    })();
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script>
-    (function () {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      if (typeof gsap === 'undefined') return;
-
-      var hero = document.querySelector('.hero');
-      if (!hero) return;
-
-      var eqs = [
-        'α', 'β', 'σ', 'μ', 'ρ', 'λ', 'θ', 'Γ',
-        'E[r]', 'VaR(99%)', 'Δ = ∂C/∂S',
-        'PnL ~ N(μ,σ²)', 'Cov(rᵢ,rⱼ)', 'βᵢ = σᵢₘ/σ²ₘ',
-        'ICᵢ = corr(α,r)', 'ΔP ≈ −D·Δy', 'r = rf + β·MRP',
-        'dS = μSdt + σdWₜ',
-        'R = α + βRₘ + ε',
-        'Sharpe = (rₚ−rƒ)/σₚ',
-        'max(Sₜ − K, 0)',
-        'ln(S/S₀) ~ N(μt,σ²t)',
-        'E[rₚ] = Σwᵢrᵢ',
-        '∂V/∂t + ½σ²S²Vₛₛ',
-        'H = −Σpᵢ ln(pᵢ)',
-        'f(x) ~ e⁻ˣ²/²σ²',
-        'w* = Σ⁻¹μ',
-      ];
-
-      // Divide sky into a 5×6 grid so equations never bunch up
-      var COLS = 6, ROWS = 5, CW = 90 / COLS, CH = 38 / ROWS;
-      var grid = [];
-      for (var r = 0; r < ROWS; r++) {
-        for (var c = 0; c < COLS; c++) {
-          grid.push([
-            2 + c * CW + Math.random() * CW * 0.55,
-            3 + r * CH + Math.random() * CH * 0.55,
-          ]);
-        }
-      }
-      // Fisher-Yates shuffle so equation types spread across the grid
-      for (var j = grid.length - 1; j > 0; j--) {
-        var k = Math.floor(Math.random() * (j + 1));
-        var t = grid[j]; grid[j] = grid[k]; grid[k] = t;
-      }
-
-      eqs.forEach(function (text, i) {
-        var el = document.createElement('span');
-        el.className = 'eq';
-        el.textContent = text;
-        var pos = grid[i % grid.length];
-        el.style.left = pos[0] + '%';
-        el.style.top  = pos[1] + '%';
-        hero.appendChild(el);
-
-        function cycle() {
-          // Fresh random direction each cycle: horizontal spread, upward bias
-          var dx      = (Math.random() - 0.5) * 72;
-          var dy      = (Math.random() - 0.68) * 58;
-          var peak    = 0.28 + Math.random() * 0.22;
-          var moveDur = 5 + Math.random() * 6;
-          var pause   = 1.5 + Math.random() * 5;
-
-          gsap.timeline({ onComplete: function () { gsap.delayedCall(pause, cycle); } })
-            .set(el, { x: 0, y: 0, opacity: 0 })
-            .to(el, { opacity: peak, duration: 0.7, ease: 'power2.out' })
-            .to(el, { x: dx, y: dy, duration: moveDur, ease: 'power1.inOut' }, '<')
-            .to(el, { opacity: 0, duration: 1.0, ease: 'power2.in' }, '-=1.0');
-        }
-
-        // Stagger first appearances across 4 seconds so they don't all pop at once
-        gsap.delayedCall(Math.random() * 4 + i * 0.08, cycle);
+      var clock = document.getElementById("sf-time");
+      var format = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Los_Angeles",
+        hour: "numeric",
+        minute: "2-digit",
       });
+      var hourOf = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Los_Angeles",
+        hour: "numeric",
+        hourCycle: "h23",
+      });
+
+      function update() {
+        var now = new Date();
+        var hour = Number(hourOf.format(now));
+        var daypart = hour >= 6 && hour < 11 ? "morning"
+          : hour >= 11 && hour < 17 ? "midday"
+          : hour >= 17 && hour < 20 ? "golden"
+          : "night";
+        document.documentElement.dataset.daypart = daypart;
+        clock.textContent = format.format(now).toLowerCase() + " in San Francisco";
+        clock.hidden = false;
+      }
+
+      update();
+      setInterval(update, 30000);
     })();
   </script>
-
 </body>
 </html>
