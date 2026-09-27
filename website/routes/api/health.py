@@ -1,21 +1,19 @@
 # -----------------------------------------------------------------------------
 # Imports
 # -----------------------------------------------------------------------------
-# Standard library imports
-from pathlib import Path
-
 # Third-party imports
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter
 
 # -----------------------------------------------------------------------------
 # Globals and constants
 # -----------------------------------------------------------------------------
-__all__ = ["templates"]
+__all__ = ["router"]
 
-_TEMPLATES_DIR = Path(__file__).parent / "templates"
+router = APIRouter()
 
 # -----------------------------------------------------------------------------
 # General API
 # -----------------------------------------------------------------------------
-# Shared Jinja2 environment used by every router to render website/templates/.
-templates = Jinja2Templates(directory=str(_TEMPLATES_DIR))
+@router.get("/health")
+async def health():
+    return {"status": "ok"}

@@ -11,8 +11,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 # Local imports
-from .brain_content import load_brain_content
-from .routers import bay_quant, brain
+from .routes import api
+from .routes import views
+from .services.brain_content import load_brain_content
 
 # -----------------------------------------------------------------------------
 # Globals and constants
@@ -39,5 +40,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="BayQuant", lifespan=lifespan)
 
-app.include_router(bay_quant.router)
-app.include_router(brain.router)
+# API first, so a future catch-all page route cannot shadow a JSON endpoint.
+app.include_router(api.router)
+app.include_router(views.router)

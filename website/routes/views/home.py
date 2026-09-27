@@ -2,11 +2,12 @@
 # Imports
 # -----------------------------------------------------------------------------
 # Third-party imports
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
+from fastapi import Request
 from fastapi.responses import HTMLResponse
 
 # Local imports
-from ..render import templates
+from .templating import templates
 
 # -----------------------------------------------------------------------------
 # Globals and constants
@@ -21,8 +22,3 @@ router = APIRouter()
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     return templates.TemplateResponse(request, "index.html")
-
-
-@router.get("/health")
-async def health():
-    return {"status": "ok"}

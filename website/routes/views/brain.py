@@ -2,11 +2,13 @@
 # Imports
 # -----------------------------------------------------------------------------
 # Third-party imports
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter
+from fastapi import HTTPException
+from fastapi import Request
 from fastapi.responses import HTMLResponse
 
 # Local imports
-from ..render import templates
+from .templating import templates
 
 # -----------------------------------------------------------------------------
 # Globals and constants
