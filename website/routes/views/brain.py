@@ -27,12 +27,8 @@ router = APIRouter(prefix="/brain")
 # -----------------------------------------------------------------------------
 @router.get("", response_class=HTMLResponse)
 async def brain_index(request: Request):
-    notes = request.app.state.brain_notes
-    items = [
-        {"slug": slug, "title": note["title"], "tags": note["tags"]}
-        for slug, note in sorted(notes.items(), key=lambda kwarg: kwarg[1]["title"].lower())
-    ]
-    return templates.TemplateResponse(request, "brain_index.html", {"notes": items})
+    tree = _build_tree(request.app.state.brain_notes)
+    return templates.TemplateResponse(request, "brain_index.html", {"tree": tree})
 
 
 # Registered before the note route, whose {slug:path} would otherwise match it.
@@ -55,3 +51,29 @@ async def brain_note(request: Request, slug: str):
         "brain_note.html",
         {"title": note["title"], "html": note["html"]},
     )
+
+# -----------------------------------------------------------------------------
+# Private API
+# -----------------------------------------------------------------------------
+def _build_tree(notes: dict[str, dict]) -> dict:
+    # Nest notes under their vault folders. Each node is
+    # {name, folders, notes, count}, sorted by name, with count covering the
+    # notes in every subfolder too.
+    root = {"name": "", "folders": {}, "notes": [], "count": 0}
+    for slug, note in notes.items():
+        node = root
+        node["count"] += 1
+        for folder_name in note["folder"]:
+            node = node["folders"].setdefault(
+                folder_name, {"name": folder_name, "folders": {}, "notes": [], "count": 0}
+            )
+            node["count"] += 1
+        node["notes"].append({"slug": slug, "title": note["title"], "tags": note["tags"]})
+
+    def _sort(node: dict) -> dict:
+        node["notes"].sort(key=lambda kwarg: kwarg["title"].lower())
+        children = sorted(node["folders"].values(), key=lambda kwarg: kwarg["name"].lower())
+        node["folders"] = [_sort(child) for child in children]
+        return node
+
+    return _sort(root)

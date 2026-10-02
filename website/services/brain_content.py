@@ -39,13 +39,15 @@ _LEADING_H1_RE = re.compile(r"^\s*<h1>.*?</h1>\s*", re.DOTALL)
 # -----------------------------------------------------------------------------
 def load_brain_content() -> tuple[dict[str, dict], dict[str, bytes]]:
     # Download the bayquant/brain repo as a tarball and turn every markdown note
-    # into rendered HTML. Returns a mapping of slug -> {title, tags, html} and a
-    # mapping of file name -> bytes for the images the notes embed.
+    # into rendered HTML. Returns a mapping of slug -> {title, tags, folder, html}
+    # and a mapping of file name -> bytes for the images the notes embed.
     with urllib.request.urlopen(BRAIN_TARBALL_URL, timeout=15) as response:
         archive_bytes = response.read()
 
     raw_notes: dict[str, dict] = {}
     attachments: dict[str, bytes] = {}
+    # The vault root is the directory holding .obsidian/ ("brain/" in this repo).
+    vault_root = ""
 
     with tarfile.open(fileobj=BytesIO(archive_bytes)) as tar:
         for member in tar.getmembers():
@@ -53,6 +55,9 @@ def load_brain_content() -> tuple[dict[str, dict], dict[str, bytes]]:
                 continue
             # Strip the leading "<repo>-<branch>/" component from the tarball path.
             relative_path = member.name.split("/", 1)[1] if "/" in member.name else member.name
+
+            if ".obsidian/" in relative_path:
+                vault_root = relative_path.split(".obsidian/", 1)[0]
 
             # Obsidian resolves ![[embeds]] by file name anywhere in the vault,
             # so attachments are keyed by bare name, not path.
@@ -68,7 +73,12 @@ def load_brain_content() -> tuple[dict[str, dict], dict[str, bytes]]:
             tags, body = _parse_frontmatter(content)
             title = relative_path.rsplit("/", 1)[-1][: -len(".md")]
             slug = _path_to_slug(relative_path)
-            raw_notes[slug] = {"title": title, "tags": tags, "body": body}
+            raw_notes[slug] = {"title": title, "tags": tags, "path": relative_path, "body": body}
+
+    # Folder names from the vault root down, e.g. ("Quant Finance",); () at the root.
+    for note in raw_notes.values():
+        vault_path = note.pop("path").removeprefix(vault_root)
+        note["folder"] = tuple(vault_path.split("/")[:-1])
 
     notes = _render_notes(raw_notes, attachments)
     return notes, attachments
@@ -129,5 +139,10 @@ def _render_notes(raw_notes: dict[str, dict], attachments: dict[str, bytes]) -> 
             extension_configs={"pymdownx.arithmatex": {"generic": True}},
         )
         html_body = _LEADING_H1_RE.sub("", html_body, count=1)
-        notes[slug] = {"title": note["title"], "tags": note["tags"], "html": html_body}
+        notes[slug] = {
+            "title": note["title"],
+            "tags": note["tags"],
+            "folder": note["folder"],
+            "html": html_body,
+        }
     return notes

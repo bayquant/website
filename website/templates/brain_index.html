@@ -1,13 +1,20 @@
 {% extends "brain_base.html" %}
 {% block title %}Notes · BayQuant{% endblock %}
-{% block content %}
-<div class="intro">
-  <h1>Notes</h1>
-  <p>Working notes on trading systems, software architecture, infrastructure and the tools in between, fetched live from the vault.</p>
-</div>
-{% if notes %}
+
+{% macro render_node(node) %}
 <ul class="index">
-  {% for note in notes %}
+  {% for folder in node.folders %}
+  <li class="folder">
+    <details>
+      <summary>
+        <span class="f-name">{{ folder.name }}</span>
+        <span class="n-tags">{{ folder.count }} note{{ "" if folder.count == 1 else "s" }}</span>
+      </summary>
+      {{ render_node(folder) }}
+    </details>
+  </li>
+  {% endfor %}
+  {% for note in node.notes %}
   <li>
     <a href="/brain/{{ note.slug }}">
       <span class="n-title">{{ note.title }}</span>
@@ -16,7 +23,16 @@
   </li>
   {% endfor %}
 </ul>
-<p class="count">{{ notes | length }} notes</p>
+{% endmacro %}
+
+{% block content %}
+<div class="intro">
+  <h1>Notes</h1>
+  <p>Working notes on trading systems, software architecture, infrastructure and the tools in between, fetched live from the vault.</p>
+</div>
+{% if tree.count %}
+{{ render_node(tree) }}
+<p class="count">{{ tree.count }} notes</p>
 {% else %}
 <p class="empty">Notes are unavailable right now. Please try again in a moment.</p>
 {% endif %}

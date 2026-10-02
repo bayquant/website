@@ -149,6 +149,44 @@
       text-align: right;
     }
 
+    /* Folders: sans face, a chevron and a note count, so they never read as notes. */
+    .folder summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      gap: 24px;
+      padding: 16px 0;
+      cursor: pointer;
+      list-style: none;
+    }
+    .folder summary::-webkit-details-marker { display: none; }
+    .folder summary:focus-visible {
+      outline: 2px solid var(--orange);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+    .f-name {
+      font-family: var(--sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .f-name::before {
+      content: "›";
+      display: inline-block;
+      width: 1em;
+      color: var(--pacific);
+      transition: transform 0.2s ease;
+    }
+    .folder details[open] > summary .f-name::before { transform: rotate(90deg); }
+    .folder summary:hover .f-name { color: var(--orange); }
+
+    .index .index {
+      margin-top: 0;
+      padding-left: 1em;
+    }
+    .index .index li:last-child { border-bottom: none; }
+
     .count,
     .empty {
       margin-top: 16px;
@@ -285,7 +323,9 @@
 
     @media (prefers-reduced-motion: reduce) {
       a,
-      .n-title { transition: none; }
+      .n-title,
+      .f-name,
+      .f-name::before { transition: none; }
     }
   </style>
 </head>

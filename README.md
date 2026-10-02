@@ -38,11 +38,15 @@ uvicorn website.main:app --reload
 ```
 website/                Application package
   main.py               App creation, startup fetch, router wiring
-  brain_content.py      Fetches and parses the bayquant/brain vault
-  render.py             Shared Jinja2 templates instance
-  routers/
-    bay_quant.py        Landing page and /health
-    brain.py            /brain and /brain/{slug}
+  routes/
+    api/                JSON endpoints
+      health.py         /health
+    views/              Server-rendered HTML pages
+      templating.py     Shared Jinja2 templates instance
+      home.py           Landing page
+      brain.py          /brain and /brain/{slug}
+  services/
+    brain_content.py    Fetches and parses the bayquant/brain vault
   templates/
     index.html          Landing page
     brain_base.html     Shared shell for note pages
