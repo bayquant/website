@@ -20,11 +20,15 @@ To stop the container, press `Ctrl+C`.
 
 ## Run locally
 
+Dependencies are managed with [uv](https://docs.astral.sh/uv/): declared in
+`pyproject.toml` and pinned in `uv.lock`.
+
 ```bash
-uv venv && source .venv/bin/activate
-uv pip install -r requirements.txt
-uvicorn website.main:app --reload
+uv sync
+uv run uvicorn website.main:app --reload
 ```
+
+To add or upgrade a dependency, use `uv add <package>` (it updates both files).
 
 ## Routes
 
@@ -32,6 +36,7 @@ uvicorn website.main:app --reload
 - `/health`: liveness check
 - `/brain`: index of notes fetched from the vault
 - `/brain/{slug}`: a single rendered note
+- `/brain/assets/{name}`: an image embedded in a note
 
 ## Project layout
 
@@ -44,7 +49,7 @@ website/                Application package
     views/              Server-rendered HTML pages
       templating.py     Shared Jinja2 templates instance
       home.py           Landing page
-      brain.py          /brain and /brain/{slug}
+      brain.py          /brain, /brain/{slug} and /brain/assets/{name}
   services/
     brain_content.py    Fetches and parses the bayquant/brain vault
   templates/
@@ -54,14 +59,16 @@ website/                Application package
     brain_note.html     Single note
 ```
 
-The repo root holds only config (`Dockerfile`, `requirements.txt`, `README.md`);
-all application code lives in the `website/` package.
+The repo root holds only config (`Dockerfile`, `pyproject.toml`, `uv.lock`,
+`.python-version`, `README.md`); all application code lives in the `website/`
+package.
 
 ## Notes (`/brain`)
 
 At startup the app downloads the [bayquant/brain](https://github.com/bayquant/brain)
-vault, renders each markdown note to HTML (resolving Obsidian `[[wiki-links]]`),
-and serves them styled with the vault's own `brain.css`. Notes refresh on every
+vault, renders each markdown note to HTML (resolving Obsidian `[[wiki-links]]`,
+`![[image]]` embeds and `$...$` math, which KaTeX draws in the browser), and
+groups the index by vault folder. Notes refresh on every
 container restart: no image rebuild needed. If GitHub is unreachable at startup
 the site still runs; `/brain` just reports that notes are unavailable.
 
