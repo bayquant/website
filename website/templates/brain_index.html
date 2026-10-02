@@ -1,27 +1,23 @@
 {% extends "brain_base.html" %}
-{% block title %}Brain — BayQuant{% endblock %}
+{% block title %}Notes · BayQuant{% endblock %}
 {% block content %}
-<div class="brain-intro">
-  <div class="bi-eyebrow">Public vault</div>
-  <h1>The Brain</h1>
-  <p>Working notes on trading systems, software architecture, infrastructure, and the tools in between: fetched live from the vault.</p>
+<div class="intro">
+  <h1>Notes</h1>
+  <p>Working notes on trading systems, software architecture, infrastructure and the tools in between, fetched live from the vault.</p>
 </div>
 {% if notes %}
-<div class="note-count">{{ notes | length }} notes</div>
-<div class="note-list">
+<ul class="index">
   {% for note in notes %}
-  <a class="note-row" href="/brain/{{ note.slug }}">
-    <span class="n-title">{{ note.title }}</span>
-    {% if note.tags %}
-    <span class="n-tags">
-      {% for tag in note.tags %}<span>{{ tag }}</span>{% endfor %}
-    </span>
-    {% endif %}
-    <span class="n-arrow">&rarr;</span>
-  </a>
+  <li>
+    <a href="/brain/{{ note.slug }}">
+      <span class="n-title">{{ note.title }}</span>
+      {% if note.tags %}<span class="n-tags">{{ note.tags | join(", ") }}</span>{% endif %}
+    </a>
+  </li>
   {% endfor %}
-</div>
+</ul>
+<p class="count">{{ notes | length }} notes</p>
 {% else %}
-<div class="brain-empty">Notes are unavailable right now. Please try again in a moment.</div>
+<p class="empty">Notes are unavailable right now. Please try again in a moment.</p>
 {% endif %}
 {% endblock %}

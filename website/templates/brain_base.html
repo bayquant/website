@@ -3,244 +3,339 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Brain — BayQuant{% endblock %}</title>
+  <title>{% block title %}Notes · BayQuant{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Public+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --abyss: #060f18;
-      --bay: #1c6e82;
-      --bridge: #c43010;
-      --ember: #e06030;
-      --fog: #e8efeb;
-      --ink: #07141c;
-      --muted: #4f6877;
+      --fog: #e9ecec;
+      --rule: #cdd4d6;
+      --slate: #1e2b31;
+      --pacific: #566971;
+      --orange: #c0362c;
 
-      --font-display: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
-      --font-body: "Source Serif 4", Georgia, serif;
-      --font-mono: "IBM Plex Mono", "SF Mono", "Courier New", monospace;
+      --serif: "Newsreader", Georgia, serif;
+      --sans: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+      --mono: "SF Mono", Menlo, Consolas, monospace;
+      --gutter: clamp(20px, 6vw, 96px);
+    }
+
+    /* The background follows the light in San Francisco, set by the script below. */
+    :root[data-daypart="morning"] { --fog: #e6eaeb; }
+    :root[data-daypart="midday"] { --fog: #eef0f0; }
+    :root[data-daypart="golden"] { --fog: #eeebe8; }
+    :root[data-daypart="night"] { --fog: #e5e7eb; }
+
+    @media (prefers-color-scheme: dark) {
+      :root,
+      :root[data-daypart] {
+        --fog: #161b1e;
+        --rule: #2c373c;
+        --slate: #d9e0e2;
+        --pacific: #8fa0a7;
+        --orange: #e0553f;
+      }
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html { background: var(--fog); }
+
     body {
-      font-family: var(--font-body);
-      color: var(--ink);
-      background: #f4f8fa;
-      line-height: 1.6;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      color: var(--slate);
+      font-family: var(--serif);
+      font-size: 1.125rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
     }
 
+    a {
+      color: inherit;
+      text-decoration-line: underline;
+      text-decoration-color: var(--rule);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.22em;
+      transition: text-decoration-color 0.2s ease;
+    }
+    a:hover { text-decoration-color: var(--orange); }
     a:focus-visible {
-      outline: 2px solid var(--ember);
+      outline: 2px solid var(--orange);
       outline-offset: 3px;
+      border-radius: 2px;
     }
 
     /* ---------- Header ---------- */
-    .brain-header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    .site-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 15px clamp(20px, 4vw, 40px);
-      background: rgba(244, 248, 250, 0.85);
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(28, 110, 130, 0.16);
-    }
-
-    .bh-brand {
-      font-family: var(--font-mono);
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ink);
-      text-decoration: none;
-    }
-    .bh-crumb {
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--bay);
-      text-decoration: none;
-      transition: color 0.15s ease;
-    }
-    .bh-crumb:hover { color: var(--bridge); }
-    .q { color: var(--bridge); }
-
-    /* ---------- Layout ---------- */
-    .brain-main {
-      width: 100%;
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 44px clamp(20px, 5vw, 32px) 72px;
-      flex: 1 0 auto;
-    }
-
-    /* ---------- Index ---------- */
-    .brain-intro { margin-bottom: 32px; }
-    .bi-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--bridge);
-      margin-bottom: 12px;
-    }
-    .brain-intro h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 4.5vw, 2.8rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      margin-bottom: 12px;
-    }
-    .brain-intro p {
-      font-size: 1.05rem;
-      color: #33505f;
-      max-width: 62ch;
-    }
-
-    .note-count {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-
-    .note-list { display: flex; flex-direction: column; gap: 10px; }
-
-    .note-row {
-      display: flex;
       align-items: baseline;
-      gap: 14px;
-      padding: 16px 18px;
-      border: 1px solid rgba(28, 110, 130, 0.18);
-      border-radius: 6px;
+      padding: 32px var(--gutter);
+      font-family: var(--sans);
+      font-size: 0.9375rem;
+    }
+    .brand {
+      font-weight: 500;
       text-decoration: none;
-      background: #ffffff;
-      transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
     }
-    .note-row:hover {
-      border-color: rgba(196, 48, 16, 0.45);
-      background: rgba(196, 48, 16, 0.03);
+    .site-nav { display: flex; gap: 28px; }
+    .site-nav a {
+      color: var(--pacific);
+      text-decoration: none;
+    }
+    .site-nav a:hover,
+    .site-nav a[aria-current] { color: var(--slate); }
+
+    /* ---------- Content ---------- */
+    /* Center the 46rem reading column; the gutter still applies on narrow screens. */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: calc(46rem + 2 * var(--gutter));
+      margin: 0 auto;
+      padding: clamp(40px, 10vh, 96px) var(--gutter) 96px;
     }
 
-    .n-title {
-      font-family: var(--font-display);
-      font-weight: 600;
-      font-size: 1.05rem;
-      color: var(--ink);
+    .intro {
+      max-width: 46rem;
+      font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+      line-height: 1.45;
+      letter-spacing: -0.005em;
     }
-    .note-row:hover .n-title { color: var(--bridge); }
+    .intro h1 {
+      font-family: var(--sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--pacific);
+      margin-bottom: 12px;
+    }
 
+    .eyebrow {
+      font-family: var(--sans);
+      font-size: 0.9375rem;
+      color: var(--pacific);
+    }
+    .eyebrow a { text-decoration: none; }
+    .eyebrow a:hover { color: var(--slate); }
+
+    /* ---------- Note list ---------- */
+    .index {
+      margin-top: clamp(48px, 8vh, 80px);
+      max-width: 46rem;
+      list-style: none;
+    }
+    .index li {
+      border-top: 1px solid var(--rule);
+    }
+    .index li:last-child { border-bottom: 1px solid var(--rule); }
+    .index a {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      gap: 24px;
+      padding: 16px 0;
+      text-decoration: none;
+    }
+    .index a:hover .n-title { color: var(--orange); }
+    .n-title { transition: color 0.2s ease; }
     .n-tags {
-      margin-left: auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 6px;
-    }
-    .n-tags span {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--bay);
-      border: 1px solid rgba(28, 110, 130, 0.28);
-      padding: 3px 8px;
-      border-radius: 999px;
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--pacific);
+      text-align: right;
     }
 
-    .n-arrow {
-      margin-left: auto;
-      font-family: var(--font-mono);
-      color: var(--bridge);
-      opacity: 0.55;
-      flex-shrink: 0;
+    .count,
+    .empty {
+      margin-top: 16px;
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--pacific);
+      font-variant-numeric: tabular-nums;
     }
-    .note-row:hover .n-arrow { opacity: 1; }
-
-    .brain-empty {
-      padding: 28px;
-      border: 1px dashed rgba(28, 110, 130, 0.3);
-      border-radius: 6px;
-      color: var(--muted);
-      font-size: 1rem;
-    }
+    .empty { font-size: 0.9375rem; }
 
     /* ---------- Note ---------- */
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--bay);
-      text-decoration: none;
-      margin-bottom: 22px;
-      transition: color 0.15s ease;
-    }
-    .back-link:hover { color: var(--bridge); }
+    .note { max-width: 46rem; }
+    .note .eyebrow { margin-bottom: 20px; }
 
-    .note-card {
-      background: #ffffff;
-      border: 1px solid rgba(28, 110, 130, 0.14);
-      border-radius: 10px;
-      padding: 40px clamp(22px, 4vw, 48px);
-      box-shadow: 0 1px 2px rgba(6, 15, 24, 0.04), 0 14px 34px rgba(6, 15, 24, 0.05);
+    .note-content > h1 {
+      font-size: clamp(1.75rem, 3.4vw, 2.25rem);
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
     }
-
-    /* Note body: keep the vault's brain.css colors, lend it the BayQuant faces */
-    .note-content { font-family: var(--font-body); font-size: 1.02rem; }
-    .note-content h1,
     .note-content h2,
-    .note-content h3 { font-family: var(--font-display); }
+    .note-content h3,
+    .note-content h4 {
+      font-family: var(--sans);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .note-content h2 {
+      font-size: 1rem;
+      margin: 48px 0 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--rule);
+    }
+    .note-content h3 {
+      font-size: 0.9375rem;
+      color: var(--pacific);
+      margin: 32px 0 8px;
+    }
+    .note-content h4 {
+      font-size: 0.875rem;
+      color: var(--pacific);
+      margin: 24px 0 8px;
+    }
+
+    .note-content p,
+    .note-content ul,
+    .note-content ol,
+    .note-content pre,
+    .note-content table,
+    .note-content blockquote { margin-bottom: 1em; }
+    .note-content ul,
+    .note-content ol { padding-left: 1.4em; }
+    .note-content li + li { margin-top: 0.25em; }
+    .note-content li > ul,
+    .note-content li > ol { margin: 0.25em 0 0; }
+
+    .note-content blockquote {
+      padding-left: 18px;
+      border-left: 2px solid var(--rule);
+      color: var(--pacific);
+      font-style: italic;
+    }
+
+    .note-content hr {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 40px 0;
+    }
+
+    .note-content code {
+      font-family: var(--mono);
+      font-size: 0.82em;
+    }
+    .note-content :not(pre) > code {
+      padding: 1px 5px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+    }
+    .note-content pre {
+      overflow-x: auto;
+      padding: 16px 18px;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      line-height: 1.55;
+    }
+
+    .note-content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-variant-numeric: tabular-nums;
+      display: block;
+      overflow-x: auto;
+    }
+    .note-content th,
+    .note-content td {
+      padding: 8px 16px 8px 0;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--rule);
+    }
+    .note-content th {
+      font-weight: 500;
+      color: var(--pacific);
+    }
+
+    .note-content img { max-width: 100%; height: auto; }
+
+    .note-content .katex-display {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 4px 0;
+    }
 
     /* ---------- Footer ---------- */
-    .brain-footer {
-      flex-shrink: 0;
-      border-top: 1px solid rgba(28, 110, 130, 0.12);
-      padding: 26px 24px;
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.03em;
-      color: var(--muted);
+    .site-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 32px var(--gutter) 40px;
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      color: var(--pacific);
+      font-variant-numeric: tabular-nums;
     }
-    .brain-footer a { color: var(--bay); text-decoration: none; }
-    .brain-footer a:hover { color: var(--bridge); }
-    .fb-mark {
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink);
+
+    @media (max-width: 640px) {
+      .index a { grid-template-columns: 1fr; gap: 2px; }
+      .n-tags { text-align: left; }
+      .site-footer { flex-direction: column; gap: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      a,
+      .n-title { transition: none; }
     }
   </style>
-  <style>{{ css | safe }}</style>
 </head>
 <body>
-  <header class="brain-header">
-    <a class="bh-brand" href="/">Bay<span class="q">Quant</span></a>
-    <a class="bh-crumb" href="/brain">Brain</a>
+  <header class="site-header">
+    <a class="brand" href="/">BayQuant</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/brain" aria-current="page">Notes</a>
+      <a href="https://bayquant.github.io/xpectral/">xpectral</a>
+    </nav>
   </header>
 
-  <main class="brain-main">
+  <main>
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="brain-footer">
-    <span class="fb-mark">Bay<span class="q">Quant</span></span> · The Brain: notes from
-    <a href="https://github.com/bayquant/brain" target="_blank" rel="noopener">bayquant/brain</a>
+  <footer class="site-footer">
+    <span id="sf-time" hidden></span>
+    <span>Notes from <a href="https://github.com/bayquant/brain" target="_blank" rel="noopener">bayquant/brain</a> · © 2026 BayQuant</span>
   </footer>
+
+  <script>
+    (function () {
+      var clock = document.getElementById("sf-time");
+      var format = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Los_Angeles",
+        hour: "numeric",
+        minute: "2-digit",
+      });
+      var hourOf = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Los_Angeles",
+        hour: "numeric",
+        hourCycle: "h23",
+      });
+
+      function update() {
+        var now = new Date();
+        var hour = Number(hourOf.format(now));
+        var daypart = hour >= 6 && hour < 11 ? "morning"
+          : hour >= 11 && hour < 17 ? "midday"
+          : hour >= 17 && hour < 20 ? "golden"
+          : "night";
+        document.documentElement.dataset.daypart = daypart;
+        clock.textContent = format.format(now).toLowerCase() + " in San Francisco";
+        clock.hidden = false;
+      }
+
+      update();
+      setInterval(update, 30000);
+    })();
+  </script>
 </body>
 </html>

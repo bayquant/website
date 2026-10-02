@@ -1,11 +1,15 @@
 {% extends "brain_base.html" %}
-{% block title %}{{ title }} — Brain{% endblock %}
+{% block title %}{{ title }} · BayQuant{% endblock %}
 {% block content %}
-<a class="back-link" href="/brain">&larr; All notes</a>
-<article class="note-card">
+<article class="note">
+  <p class="eyebrow"><a href="/brain">&larr; All notes</a></p>
   <div class="note-content">
     <h1>{{ title }}</h1>
     {{ html | safe }}
   </div>
 </article>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.18.9/katex.min.css" integrity="sha384-lPx0C4zIUZLpveABMwOFcFeGZwsvKBJfhJ85FN1PYOV7xApBcFMhcAEMVKF8loOI" crossorigin="anonymous">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.18.9/katex.min.js" integrity="sha384-19KE2cFb3U+RUWmyhBz7aLOGDG8WrRC6hE3oY/HTZZlAAVWYTdmvLC//+TIV3zUx" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.18.9/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"
+  onload="renderMathInElement(document.querySelector('.note-content'), {delimiters: [{left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}], throwOnError: false});"></script>
 {% endblock %}

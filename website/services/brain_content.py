@@ -7,6 +7,8 @@ import tarfile
 import urllib.error
 import urllib.request
 from io import BytesIO
+from pathlib import PurePosixPath
+from urllib.parse import quote
 
 # Third-party imports
 import markdown
@@ -14,28 +16,36 @@ import markdown
 # -----------------------------------------------------------------------------
 # Globals and constants
 # -----------------------------------------------------------------------------
-__all__ = ["load_brain_content"]
+__all__ = ["ATTACHMENT_TYPES", "load_brain_content"]
 
 BRAIN_TARBALL_URL = "https://codeload.github.com/bayquant/brain/tar.gz/refs/heads/main"
-BRAIN_CSS_PATH = ".obsidian/snippets/brain.css"
+ATTACHMENT_TYPES = {
+    ".gif": "image/gif",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".svg": "image/svg+xml",
+    ".webp": "image/webp",
+}
 
 _FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n?(.*)$", re.DOTALL)
 _TAGS_RE = re.compile(r"tags:\s*\[(.*?)\]")
+_EMBED_RE = re.compile(r"!\[\[([^\]|]+)(?:\|[^\]]*)?\]\]")
 _WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 _LEADING_H1_RE = re.compile(r"^\s*<h1>.*?</h1>\s*", re.DOTALL)
 
 # -----------------------------------------------------------------------------
 # General API
 # -----------------------------------------------------------------------------
-def load_brain_content() -> tuple[dict[str, dict], str]:
+def load_brain_content() -> tuple[dict[str, dict], dict[str, bytes]]:
     # Download the bayquant/brain repo as a tarball and turn every markdown note
-    # into rendered HTML. Returns a mapping of slug -> {title, tags, html} and
-    # the vault's brain.css rewritten to target the .note-content wrapper.
+    # into rendered HTML. Returns a mapping of slug -> {title, tags, html} and a
+    # mapping of file name -> bytes for the images the notes embed.
     with urllib.request.urlopen(BRAIN_TARBALL_URL, timeout=15) as response:
         archive_bytes = response.read()
 
     raw_notes: dict[str, dict] = {}
-    css_text = ""
+    attachments: dict[str, bytes] = {}
 
     with tarfile.open(fileobj=BytesIO(archive_bytes)) as tar:
         for member in tar.getmembers():
@@ -44,8 +54,11 @@ def load_brain_content() -> tuple[dict[str, dict], str]:
             # Strip the leading "<repo>-<branch>/" component from the tarball path.
             relative_path = member.name.split("/", 1)[1] if "/" in member.name else member.name
 
-            if relative_path == BRAIN_CSS_PATH:
-                css_text = tar.extractfile(member).read().decode("utf-8")
+            # Obsidian resolves ![[embeds]] by file name anywhere in the vault,
+            # so attachments are keyed by bare name, not path.
+            file_name = relative_path.rsplit("/", 1)[-1]
+            if PurePosixPath(file_name).suffix.lower() in ATTACHMENT_TYPES:
+                attachments[file_name] = tar.extractfile(member).read()
                 continue
 
             if not relative_path.endswith(".md") or relative_path.startswith(".obsidian/"):
@@ -57,9 +70,8 @@ def load_brain_content() -> tuple[dict[str, dict], str]:
             slug = _path_to_slug(relative_path)
             raw_notes[slug] = {"title": title, "tags": tags, "body": body}
 
-    notes = _render_notes(raw_notes)
-    brain_css = css_text.replace(".markdown-preview-view", ".note-content")
-    return notes, brain_css
+    notes = _render_notes(raw_notes, attachments)
+    return notes, attachments
 
 # -----------------------------------------------------------------------------
 # Private API
@@ -85,10 +97,16 @@ def _parse_frontmatter(text: str) -> tuple[list[str], str]:
     return tags, body
 
 
-def _render_notes(raw_notes: dict[str, dict]) -> dict[str, dict]:
-    # Resolve [[wiki-links]] against note titles, convert bodies to HTML, and
-    # drop the leading H1 the vault convention repeats inside every note.
+def _render_notes(raw_notes: dict[str, dict], attachments: dict[str, bytes]) -> dict[str, dict]:
+    # Resolve ![[embeds]] and [[wiki-links]], convert bodies to HTML, and drop
+    # the leading H1 the vault convention repeats inside every note.
     title_to_slug = {note["title"].lower(): slug for slug, note in raw_notes.items()}
+
+    def _resolve_embed(match: re.Match) -> str:
+        file_name = match.group(1).strip()
+        if file_name not in attachments:
+            return file_name
+        return f"![{file_name}](/brain/assets/{quote(file_name)})"
 
     def _resolve_wikilink(match: re.Match) -> str:
         target = match.group(1).strip()
@@ -100,8 +118,16 @@ def _render_notes(raw_notes: dict[str, dict]) -> dict[str, dict]:
 
     notes: dict[str, dict] = {}
     for slug, note in raw_notes.items():
-        body_with_links = _WIKILINK_RE.sub(_resolve_wikilink, note["body"])
-        html_body = markdown.markdown(body_with_links, extensions=["extra"])
+        # Embeds go first, or the wiki-link pass would consume their [[...]].
+        body_with_embeds = _EMBED_RE.sub(_resolve_embed, note["body"])
+        body_with_links = _WIKILINK_RE.sub(_resolve_wikilink, body_with_embeds)
+        # arithmatex shields $...$ and $$...$$ from markdown and leaves \(...\)
+        # and \[...\] for KaTeX to render in the browser.
+        html_body = markdown.markdown(
+            body_with_links,
+            extensions=["extra", "pymdownx.arithmatex"],
+            extension_configs={"pymdownx.arithmatex": {"generic": True}},
+        )
         html_body = _LEADING_H1_RE.sub("", html_body, count=1)
         notes[slug] = {"title": note["title"], "tags": note["tags"], "html": html_body}
     return notes

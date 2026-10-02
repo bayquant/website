@@ -30,11 +30,15 @@ async def lifespan(app: FastAPI):
     # Pull the bayquant/brain notes once at startup. A GitHub hiccup must not
     # crash the app, so on failure the /brain routes degrade to an empty state.
     try:
-        app.state.brain_notes, app.state.brain_css = load_brain_content()
-        _logger.info("Loaded %d notes from bayquant/brain", len(app.state.brain_notes))
+        app.state.brain_notes, app.state.brain_attachments = load_brain_content()
+        _logger.info(
+            "Loaded %d notes and %d attachments from bayquant/brain",
+            len(app.state.brain_notes),
+            len(app.state.brain_attachments),
+        )
     except (urllib.error.URLError, tarfile.TarError, TimeoutError) as exc:
         _logger.warning("Failed to fetch bayquant/brain notes: %s", exc)
-        app.state.brain_notes, app.state.brain_css = {}, ""
+        app.state.brain_notes, app.state.brain_attachments = {}, {}
     yield
 
 
