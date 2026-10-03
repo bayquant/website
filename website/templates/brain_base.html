@@ -1,381 +1,226 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Notes · BayQuant{% endblock %}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Public+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --fog: #e9ecec;
-      --rule: #cdd4d6;
-      --slate: #1e2b31;
-      --pacific: #566971;
-      --orange: #c0362c;
+{% extends "base.html" %}
+{% set section = "notes" %}
+{% block title %}Notes · BayQuant{% endblock %}
 
-      --serif: "Newsreader", Georgia, serif;
-      --sans: "Public Sans", "Helvetica Neue", Arial, sans-serif;
-      --mono: "SF Mono", Menlo, Consolas, monospace;
-      --gutter: clamp(20px, 6vw, 96px);
-    }
+{% block styles %}
+<style>
+  /* Center the 46rem reading column; the gutter still applies on narrow screens. */
+  main {
+    width: 100%;
+    max-width: calc(46rem + 2 * var(--gutter));
+    margin: 0 auto;
+    padding: clamp(40px, 10vh, 96px) var(--gutter) 96px;
+  }
 
-    /* The background follows the light in San Francisco, set by the script below. */
-    :root[data-daypart="morning"] { --fog: #e6eaeb; }
-    :root[data-daypart="midday"] { --fog: #eef0f0; }
-    :root[data-daypart="golden"] { --fog: #eeebe8; }
-    :root[data-daypart="night"] { --fog: #e5e7eb; }
+  .intro h1 {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--pacific);
+    margin-bottom: 12px;
+  }
 
-    @media (prefers-color-scheme: dark) {
-      :root,
-      :root[data-daypart] {
-        --fog: #161b1e;
-        --rule: #2c373c;
-        --slate: #d9e0e2;
-        --pacific: #8fa0a7;
-        --orange: #e0553f;
-      }
-    }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    color: var(--pacific);
+  }
+  .eyebrow a { text-decoration: none; }
+  .eyebrow a:hover { color: var(--slate); }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* ---------- Note list ---------- */
+  .index {
+    margin-top: clamp(48px, 8vh, 80px);
+    max-width: 46rem;
+    list-style: none;
+  }
+  .index li {
+    border-top: 1px solid var(--rule);
+  }
+  .index li:last-child { border-bottom: 1px solid var(--rule); }
+  .index a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 24px;
+    padding: 16px 0;
+    text-decoration: none;
+  }
+  .index a:hover .n-title { color: var(--orange); }
+  .n-title { transition: color 0.2s ease; }
+  .n-tags {
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    color: var(--pacific);
+    text-align: right;
+  }
 
-    html { background: var(--fog); }
+  /* Folders: sans face, a chevron and a note count, so they never read as notes. */
+  .folder summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 24px;
+    padding: 16px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .folder summary::-webkit-details-marker { display: none; }
+  .folder summary:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .f-name {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  .f-name::before {
+    content: "›";
+    display: inline-block;
+    width: 1em;
+    color: var(--pacific);
+    transition: transform 0.2s ease;
+  }
+  .folder details[open] > summary .f-name::before { transform: rotate(90deg); }
+  .folder summary:hover .f-name { color: var(--orange); }
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      color: var(--slate);
-      font-family: var(--serif);
-      font-size: 1.125rem;
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-    }
+  .index .index {
+    margin-top: 0;
+    padding-left: 1em;
+  }
+  .index .index li:last-child { border-bottom: none; }
 
-    a {
-      color: inherit;
-      text-decoration-line: underline;
-      text-decoration-color: var(--rule);
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.22em;
-      transition: text-decoration-color 0.2s ease;
-    }
-    a:hover { text-decoration-color: var(--orange); }
-    a:focus-visible {
-      outline: 2px solid var(--orange);
-      outline-offset: 3px;
-      border-radius: 2px;
-    }
+  .count,
+  .empty {
+    margin-top: 16px;
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    color: var(--pacific);
+    font-variant-numeric: tabular-nums;
+  }
+  .empty { font-size: 0.9375rem; }
 
-    /* ---------- Header ---------- */
-    .site-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 32px var(--gutter);
-      font-family: var(--sans);
-      font-size: 0.9375rem;
-    }
-    .brand {
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .site-nav { display: flex; gap: 28px; }
-    .site-nav a {
-      color: var(--pacific);
-      text-decoration: none;
-    }
-    .site-nav a:hover,
-    .site-nav a[aria-current] { color: var(--slate); }
+  /* ---------- Note ---------- */
+  .note { max-width: 46rem; }
+  .note .eyebrow { margin-bottom: 20px; }
 
-    /* ---------- Content ---------- */
-    /* Center the 46rem reading column; the gutter still applies on narrow screens. */
-    main {
-      flex: 1;
-      width: 100%;
-      max-width: calc(46rem + 2 * var(--gutter));
-      margin: 0 auto;
-      padding: clamp(40px, 10vh, 96px) var(--gutter) 96px;
-    }
+  .note-content > h1 {
+    font-size: clamp(1.75rem, 3.4vw, 2.25rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 32px;
+  }
+  .note-content h2,
+  .note-content h3,
+  .note-content h4 {
+    font-family: var(--sans);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .note-content h2 {
+    font-size: 1rem;
+    margin: 48px 0 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+  .note-content h3 {
+    font-size: 0.9375rem;
+    color: var(--pacific);
+    margin: 32px 0 8px;
+  }
+  .note-content h4 {
+    font-size: 0.875rem;
+    color: var(--pacific);
+    margin: 24px 0 8px;
+  }
 
-    .intro {
-      max-width: 46rem;
-      font-size: clamp(1.375rem, 2.4vw, 1.75rem);
-      line-height: 1.45;
-      letter-spacing: -0.005em;
-    }
-    .intro h1 {
-      font-family: var(--sans);
-      font-size: 0.9375rem;
-      font-weight: 500;
-      letter-spacing: 0;
-      color: var(--pacific);
-      margin-bottom: 12px;
-    }
+  .note-content p,
+  .note-content ul,
+  .note-content ol,
+  .note-content pre,
+  .note-content table,
+  .note-content blockquote { margin-bottom: 1em; }
+  .note-content ul,
+  .note-content ol { padding-left: 1.4em; }
+  .note-content li + li { margin-top: 0.25em; }
+  .note-content li > ul,
+  .note-content li > ol { margin: 0.25em 0 0; }
 
-    .eyebrow {
-      font-family: var(--sans);
-      font-size: 0.9375rem;
-      color: var(--pacific);
-    }
-    .eyebrow a { text-decoration: none; }
-    .eyebrow a:hover { color: var(--slate); }
+  .note-content blockquote {
+    padding-left: 18px;
+    border-left: 2px solid var(--rule);
+    color: var(--pacific);
+    font-style: italic;
+  }
 
-    /* ---------- Note list ---------- */
-    .index {
-      margin-top: clamp(48px, 8vh, 80px);
-      max-width: 46rem;
-      list-style: none;
-    }
-    .index li {
-      border-top: 1px solid var(--rule);
-    }
-    .index li:last-child { border-bottom: 1px solid var(--rule); }
-    .index a {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: baseline;
-      gap: 24px;
-      padding: 16px 0;
-      text-decoration: none;
-    }
-    .index a:hover .n-title { color: var(--orange); }
-    .n-title { transition: color 0.2s ease; }
-    .n-tags {
-      font-family: var(--sans);
-      font-size: 0.8125rem;
-      color: var(--pacific);
-      text-align: right;
-    }
+  .note-content hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 40px 0;
+  }
 
-    /* Folders: sans face, a chevron and a note count, so they never read as notes. */
-    .folder summary {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: baseline;
-      gap: 24px;
-      padding: 16px 0;
-      cursor: pointer;
-      list-style: none;
-    }
-    .folder summary::-webkit-details-marker { display: none; }
-    .folder summary:focus-visible {
-      outline: 2px solid var(--orange);
-      outline-offset: 3px;
-      border-radius: 2px;
-    }
-    .f-name {
-      font-family: var(--sans);
-      font-size: 0.9375rem;
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
-    .f-name::before {
-      content: "›";
-      display: inline-block;
-      width: 1em;
-      color: var(--pacific);
-      transition: transform 0.2s ease;
-    }
-    .folder details[open] > summary .f-name::before { transform: rotate(90deg); }
-    .folder summary:hover .f-name { color: var(--orange); }
+  .note-content code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+  }
+  .note-content :not(pre) > code {
+    padding: 1px 5px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+  .note-content pre {
+    overflow-x: auto;
+    padding: 16px 18px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    line-height: 1.55;
+  }
 
-    .index .index {
-      margin-top: 0;
-      padding-left: 1em;
-    }
-    .index .index li:last-child { border-bottom: none; }
+  .note-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    display: block;
+    overflow-x: auto;
+  }
+  .note-content th,
+  .note-content td {
+    padding: 8px 16px 8px 0;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--rule);
+  }
+  .note-content th {
+    font-weight: 500;
+    color: var(--pacific);
+  }
 
-    .count,
-    .empty {
-      margin-top: 16px;
-      font-family: var(--sans);
-      font-size: 0.8125rem;
-      color: var(--pacific);
-      font-variant-numeric: tabular-nums;
-    }
-    .empty { font-size: 0.9375rem; }
+  .note-content img { max-width: 100%; height: auto; }
 
-    /* ---------- Note ---------- */
-    .note { max-width: 46rem; }
-    .note .eyebrow { margin-bottom: 20px; }
+  .note-content .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 0;
+  }
 
-    .note-content > h1 {
-      font-size: clamp(1.75rem, 3.4vw, 2.25rem);
-      font-weight: 500;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      margin-bottom: 32px;
-    }
-    .note-content h2,
-    .note-content h3,
-    .note-content h4 {
-      font-family: var(--sans);
-      font-weight: 500;
-      line-height: 1.4;
-    }
-    .note-content h2 {
-      font-size: 1rem;
-      margin: 48px 0 12px;
-      padding-top: 16px;
-      border-top: 1px solid var(--rule);
-    }
-    .note-content h3 {
-      font-size: 0.9375rem;
-      color: var(--pacific);
-      margin: 32px 0 8px;
-    }
-    .note-content h4 {
-      font-size: 0.875rem;
-      color: var(--pacific);
-      margin: 24px 0 8px;
-    }
+  @media (max-width: 640px) {
+    .index a { grid-template-columns: 1fr; gap: 2px; }
+    .n-tags { text-align: left; }
+  }
 
-    .note-content p,
-    .note-content ul,
-    .note-content ol,
-    .note-content pre,
-    .note-content table,
-    .note-content blockquote { margin-bottom: 1em; }
-    .note-content ul,
-    .note-content ol { padding-left: 1.4em; }
-    .note-content li + li { margin-top: 0.25em; }
-    .note-content li > ul,
-    .note-content li > ol { margin: 0.25em 0 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .n-title,
+    .f-name,
+    .f-name::before { transition: none; }
+  }
+</style>
+{% endblock %}
 
-    .note-content blockquote {
-      padding-left: 18px;
-      border-left: 2px solid var(--rule);
-      color: var(--pacific);
-      font-style: italic;
-    }
-
-    .note-content hr {
-      border: none;
-      border-top: 1px solid var(--rule);
-      margin: 40px 0;
-    }
-
-    .note-content code {
-      font-family: var(--mono);
-      font-size: 0.82em;
-    }
-    .note-content :not(pre) > code {
-      padding: 1px 5px;
-      border: 1px solid var(--rule);
-      border-radius: 3px;
-    }
-    .note-content pre {
-      overflow-x: auto;
-      padding: 16px 18px;
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      line-height: 1.55;
-    }
-
-    .note-content table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--sans);
-      font-size: 0.875rem;
-      font-variant-numeric: tabular-nums;
-      display: block;
-      overflow-x: auto;
-    }
-    .note-content th,
-    .note-content td {
-      padding: 8px 16px 8px 0;
-      text-align: left;
-      vertical-align: top;
-      border-bottom: 1px solid var(--rule);
-    }
-    .note-content th {
-      font-weight: 500;
-      color: var(--pacific);
-    }
-
-    .note-content img { max-width: 100%; height: auto; }
-
-    .note-content .katex-display {
-      overflow-x: auto;
-      overflow-y: hidden;
-      padding: 4px 0;
-    }
-
-    /* ---------- Footer ---------- */
-    .site-footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 24px;
-      padding: 32px var(--gutter) 40px;
-      font-family: var(--sans);
-      font-size: 0.8125rem;
-      color: var(--pacific);
-      font-variant-numeric: tabular-nums;
-    }
-
-    @media (max-width: 640px) {
-      .index a { grid-template-columns: 1fr; gap: 2px; }
-      .n-tags { text-align: left; }
-      .site-footer { flex-direction: column; gap: 4px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      a,
-      .n-title,
-      .f-name,
-      .f-name::before { transition: none; }
-    }
-  </style>
-</head>
-<body>
-  <header class="site-header">
-    <a class="brand" href="/">BayQuant</a>
-    <nav class="site-nav" aria-label="Main">
-      <a href="/brain" aria-current="page">Notes</a>
-      <a href="https://bayquant.github.io/xpectral/">xpectral</a>
-    </nav>
-  </header>
-
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer class="site-footer">
-    <span id="sf-time" hidden></span>
-    <span>Notes from <a href="https://github.com/bayquant/brain" target="_blank" rel="noopener">bayquant/brain</a> · © 2026 BayQuant</span>
-  </footer>
-
-  <script>
-    (function () {
-      var clock = document.getElementById("sf-time");
-      var format = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Los_Angeles",
-        hour: "numeric",
-        minute: "2-digit",
-      });
-      var hourOf = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Los_Angeles",
-        hour: "numeric",
-        hourCycle: "h23",
-      });
-
-      function update() {
-        var now = new Date();
-        var hour = Number(hourOf.format(now));
-        var daypart = hour >= 6 && hour < 11 ? "morning"
-          : hour >= 11 && hour < 17 ? "midday"
-          : hour >= 17 && hour < 20 ? "golden"
-          : "night";
-        document.documentElement.dataset.daypart = daypart;
-        clock.textContent = format.format(now).toLowerCase() + " in San Francisco";
-        clock.hidden = false;
-      }
-
-      update();
-      setInterval(update, 30000);
-    })();
-  </script>
-</body>
-</html>
+{% block footer %}Notes from <a href="https://github.com/bayquant/brain" target="_blank" rel="noopener">bayquant/brain</a> · © 2026 BayQuant{% endblock %}
