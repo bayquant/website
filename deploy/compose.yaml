@@ -1,0 +1,12 @@
+# How the website runs on the droplet. Built from the repo's Dockerfile.
+# The port is published on the droplet's loopback only: Caddy is the only
+# thing that can reach it, and the internet never sees it directly.
+name: website
+
+services:
+  website:
+    container_name: website
+    build: ..
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped

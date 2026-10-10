@@ -30,6 +30,30 @@ uv run uvicorn website.main:app --reload
 
 To add or upgrade a dependency, use `uv add <package>` (it updates both files).
 
+## Deploying
+
+The site runs on a DigitalOcean droplet prepared by the
+[digital-ocean](https://github.com/bayquant/digital-ocean) repo (Docker and Caddy
+installed, no app on it). Everything specific to this app lives in `deploy/`:
+
+```
+deploy/
+  compose.yaml    # how the container runs (published on 127.0.0.1:8000 only)
+  website.caddy   # tells Caddy to serve bayquant.dev and www.bayquant.dev from it
+  deploy.sh       # ships the committed code and starts it
+```
+
+Commit your changes, then:
+
+```bash
+deploy/deploy.sh                          # deploys to deploy@bayquant.dev
+deploy/deploy.sh deploy@DROPLET_IP        # use the IP right after the droplet is recreated
+```
+
+Only the committed `HEAD` is deployed. The script replaces `/opt/apps/website` on
+the droplet, rebuilds the image, restarts the container, reloads Caddy, and waits
+for `/health` to answer.
+
 ## Routes
 
 - `/`: the landing page
@@ -60,8 +84,8 @@ website/                Application package
 ```
 
 The repo root holds only config (`Dockerfile`, `pyproject.toml`, `uv.lock`,
-`.python-version`, `README.md`); all application code lives in the `website/`
-package.
+`.python-version`, `README.md`) and the `deploy/` folder; all application code
+lives in the `website/` package.
 
 ## Notes (`/brain`)
 
