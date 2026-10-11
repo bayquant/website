@@ -32,27 +32,34 @@ To add or upgrade a dependency, use `uv add <package>` (it updates both files).
 
 ## Deploying
 
-The site runs on a DigitalOcean droplet prepared by the
+Services run on a DigitalOcean droplet prepared by the
 [digital-ocean](https://github.com/bayquant/digital-ocean) repo (Docker and Caddy
-installed, no app on it). Everything specific to this app lives in `deploy/`:
+installed, no app on it). Everything about how things run lives in `deploy/`,
+one folder per service, each with its own README:
 
 ```
 deploy/
-  compose.yaml    # how the container runs (published on 127.0.0.1:8000 only)
-  website.caddy   # tells Caddy to serve bayquant.dev and www.bayquant.dev from it
-  deploy.sh       # ships the committed code and starts it
+  deploy.sh        # deploy.sh <service> [user@host]
+  website/         # this app (FastAPI, built from the Dockerfile)
+  postgres/        # shared Postgres: one role and database per app
+  prefect/         # Prefect server, backed by the shared Postgres
 ```
 
 Commit your changes, then:
 
 ```bash
-deploy/deploy.sh                          # deploys to deploy@bayquant.dev
-deploy/deploy.sh deploy@DROPLET_IP        # use the IP right after the droplet is recreated
+deploy/deploy.sh website                      # deploys to deploy@bayquant.dev
+deploy/deploy.sh website deploy@DROPLET_IP    # use the IP right after the droplet is recreated
 ```
 
-Only the committed `HEAD` is deployed. The script replaces `/opt/apps/website` on
-the droplet, rebuilds the image, restarts the container, reloads Caddy, and waits
-for `/health` to answer.
+Only the committed `HEAD` is deployed. The script replaces `/opt/apps/<service>`
+on the droplet, rebuilds, restarts that one service, reloads Caddy if the service
+has a `.caddy` file, and waits for its healthcheck. Services are independent:
+deploying one never restarts another.
+
+Secrets live on the droplet in `/opt/secrets/<service>.env`, outside the repo and
+outside the directory the deploy replaces. See each service's README for setup.
+On a fresh droplet, deploy `postgres` before `prefect`.
 
 ## Routes
 

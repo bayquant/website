@@ -1,0 +1,7 @@
+prefect.bayquant.dev {
+    # The UI has no auth of its own. The hashed password lives on the droplet,
+    # not in this repo (see README.md).
+    import /etc/caddy/secrets/prefect-auth.caddy
+
+    reverse_proxy 127.0.0.1:4200
+}

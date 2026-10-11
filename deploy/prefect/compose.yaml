@@ -1,0 +1,33 @@
+# Prefect server (API, UI and background services in one process), backed by
+# the shared Postgres. The port is published on the droplet's loopback only:
+# Caddy is the only thing that can reach it.
+name: prefect
+
+services:
+  prefect:
+    container_name: prefect
+    image: prefecthq/prefect:3-latest
+    command: prefect server start --host 0.0.0.0
+    environment:
+      PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://prefect:${PREFECT_DB_PASSWORD:?set in /opt/secrets/prefect.env}@postgres:5432/prefect
+      # The browser reaches the API through Caddy, not through the container
+      PREFECT_UI_API_URL: https://prefect.bayquant.dev/api
+    ports:
+      - "127.0.0.1:4200:4200"
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen("http://127.0.0.1:4200/api/health")
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+networks:
+  backend:
+    external: true
